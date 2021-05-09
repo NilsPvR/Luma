@@ -12,14 +12,39 @@ client.once('ready', () => {
 });
 
 
+let loop_stop = false;
+let running = false;
+
 client.on('message', message => {
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
 	const args = message.content.slice(prefix.length).trim().split(/ +/);
 	const command = args.shift().toLowerCase();
+
 	if (command === 'ping') {
-		// send "Pong" to the channel
 		message.channel.send('Pong.');
+	}
+	else if (command === 'meow') {
+		if (message.member.hasPermission('ADMINISTRATOR') & !running) { // require admin, don't start multiple loops
+			message.channel.send('You found a cat!');
+			loop_stop = false;
+			running = true;
+			const interval = setInterval (() => {
+				if (loop_stop) { // break on woof cmd
+					running = false;
+					clearInterval(interval);
+					return;
+				}
+				message.channel.send('meow')
+					.catch(console.error);
+			}, 3 * 1000);
+		}
+	}
+	else if (command === 'woof') { // break meow loop
+		if (message.member.hasPermission('ADMINISTRATOR') & running) { // require admin, when cat is running
+			loop_stop = true;
+			message.channel.send('The cat has been scared away!');
+		}
 	}
 	else if (command === 'args-info') {
 		if (!args.length) {
