@@ -3,11 +3,15 @@
   "version": "1.0.0",
   "description": "Testing around with discord.js",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NilsPvR/Luma"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Nils",
-  "license": "ISC",
+  "license": "GPL-3.0-only",
   "dependencies": {
     "discord.js": "^12.5.3",
     "dotenv": "^9.0.0"
