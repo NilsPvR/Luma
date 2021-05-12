@@ -1,10 +1,49 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
+
 const Discord = require('discord.js');
-const client = new Discord.Client();
 
 const { prefix } = require('./config.json');
+
+const client = new Discord.Client();
+client.commands = new Discord.Collection();
+client.cooldowns = new Discord.Collection(); // key = command_name, value = Collection(key = user_id, value = last time used cmd by this user)
+
+
+// <<<--- Read all files in the command folder including subdirectories --->>>
+const fs = require('fs'); // node native file system
+const path = require('path'); // node native path module
+
+// recursive function that goes through each subdirectory, takes file path + optional arrayOfFiles
+// returns array of all filenames
+const getAllFiles = (dirPath, arrayOfFiles) => {
+	// get all files in the current dir
+	const filesNfolders = fs.readdirSync(dirPath);
+
+	arrayOfFiles = arrayOfFiles || []; // First time calling the method no array is given -> create a new one
+
+	filesNfolders.forEach(file => { // For all files or directories in the current dir
+		if (fs.statSync(dirPath + '/' + file).isDirectory()) { // If directory
+			// recursive call
+			arrayOfFiles = getAllFiles(dirPath + '/' + file, arrayOfFiles);
+		}
+		else { // it's a file
+			arrayOfFiles.push(path.join(__dirname, dirPath, '/', file)); // append absolute file path to array
+		}
+	});
+
+	return arrayOfFiles;
+};
+// <<<--- end --->>>
+
+
+for (const file of getAllFiles('./commands')) {
+	const command = require(`${file}`);
+	// set a new item in the collection
+	// with the key as the command name and the vlaue as the exported module
+	client.commands.set(command.name, command);
+}
 
 // will only run once after logging in
 client.once('ready', () => {
@@ -15,99 +54,63 @@ client.once('ready', () => {
 let loop_stop = false;
 let running = false;
 
-function autodel(msg) {
-	msg.delete({ timeout: 3000 })
-		.catch(console.error);
-}
 
 client.on('message', message => {
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
 	const args = message.content.slice(prefix.length).trim().split(/ +/);
-	const command = args.shift().toLowerCase();
+	const commandName = args.shift().toLowerCase();
 
-	if (command === 'ping') {
-		message.channel.send('Pong.');
-	}
-	else if (command === 'meow') {
-		if (message.member.hasPermission('ADMINISTRATOR') & !running) { // require admin, don't start multiple loops
-			message.channel.send('You found a cat!');
-			loop_stop = false;
-			running = true;
-			const interval = setInterval (() => {
-				if (loop_stop) { // break on woof cmd
-					running = false;
-					clearInterval(interval);
-					return;
-				}
-				message.channel.send('meow')
-					.catch(console.error);
-			}, 3 * 1000);
-		}
-	}
-	else if (command === 'woof') { // break meow loop
-		if (message.member.hasPermission('ADMINISTRATOR') & running) { // require admin, when cat is running
-			loop_stop = true;
-			message.channel.send('The cat has been scared away!');
-		}
-	}
-	else if (command === 'args-info') {
-		if (!args.length) {
-			return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
-		}
-		message.channel.send(`Command name: ${command}\nArguments: ${args}`);
-	}
-	else if (command === 'kick') {
-		if (!message.mentions.users.size) {
-			return message.reply('you need to tag a user in order to kick them cuz I am stupido');
-		}
-		const taggedUser = message.mentions.users.first();
+	if (!client.commands.has(commandName)) return; // the command does not exist
 
-		message.channel.send(`You wanted to kick: ${taggedUser.id}`);
-	}
-	else if (command === 'av') {
-		if (!message.mentions.users.size) {
-			return message.channel.send(`Your avatar: ${message.author.displayAvatarURL({ format: 'png', dynamic: true })}`);
-		}
+	const command = client.commands.get(commandName);
 
-		const avatarList = message.mentions.users.map(user => {
-			return `${user.username}'s avatar: ${user.displayAvatarURL({ format: 'png', dynamic: true })}`;
-		});
+	// --- Cooldown filter
+	const { cooldowns } = client;
 
-		message.channel.send(avatarList);
+	if (!cooldowns.has(command.name)) { // is there already an entry for this cmd?
+		cooldowns.set(command.name, new Discord.Collection());
 	}
-	else if (command === 'prune') {
-		const amount = parseInt(args[0]);
-		if (!args.length) {
-			return message.reply('you didn\'t provide a amount to delete');
+
+	const now = Date.now();
+	const timestamps = cooldowns.get(command.name); // reference to the collection for this command
+	const cooldownAmount = (command.cooldown || 3) * 1000; // default 3s
+
+	if (timestamps.has(message.author.id)) { // the author has used this cmd before
+		// get last used timestamp -> add cooldownAmount
+		const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
+
+		if (now < expirationTime) { // epirationTime has not been reached yet
+			const timeLeft = (expirationTime - now) / 1000;
+			if (timeLeft.toFixed(1) == 1.0) return message.reply(`please wait 1 more second before reusing the \`${command.name}\` command.`);
+			return message.reply(`please wait ${timeLeft.toFixed(1)} more seconds before reusing the \`${command.name}\` command.`);
 		}
-		else if (isNaN(amount)) {
-			return message.reply('that doesn\'t seem to be a valid number.');
-		}
-		else if (amount === 0) {
-			return message.reply('well I deleted 0 messages...');
-		}
-		else if (amount < 1 || amount > 100) {
-			return message.reply('you need to provide a number which is betweeen 1 and 100.');
-		}
-		else if (amount === 1) {
-			message.channel.bulkDelete(amount + 1, true);
-			return message.reply(`${amount} message has been deleted`)
-				.then(msg => autodel(msg));
-		}
-		message.channel.bulkDelete(amount + 1, true);
-		message.reply(`${amount} messages have been deleted`)
-			.then(msg => autodel(msg));
 	}
-	else if (message.content.startsWith(`${prefix}beep`)) {
-		message.channel.send('Boop.');
+	// not returned yet -> command not used before / expirationTime has passed
+	timestamps.set(message.author.id, now);
+	setTimeout(() => timestamps.delete(message.author.id), cooldownAmount); // autodelete entry after cooldown epiration
+
+	// --- DM filter
+	if (command.guildOnly && message.channel.type === 'dm') {
+		return message.reply('This command no work in my DMs :/');
 	}
-	else if (message.content === `${prefix}server`) {
-		message.channel.send(`Server name: ${message.guild.name}\nTotal members: ${message.guild.memberCount}`);
+
+	// --- Argument filter
+	if (command.args && !args.length) {
+		return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
 	}
-	else if (message.content === `${prefix}user`) {
-		message.channel.send(`Your username: ${message.author.username}\nYour ID: ${message.author.id}`);
+
+
+	try {
+		// get the command, call execute method with arguments
+		command.execute(message, args);
 	}
+	catch (error) {
+		// error detection
+		console.error(error);
+		message.reply('an error occured. Plz report this to the developer.');
+	}
+
 });
 
 
