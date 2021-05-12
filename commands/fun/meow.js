@@ -4,6 +4,7 @@ let running = false;
 module.exports = {
 	name: 'meow',
 	description: 'meow',
+	guildOnly: true,
 	execute(message, args) {
 		if (!args.length) {
 			if (message.member.hasPermission('ADMINISTRATOR') & !running) { // require admin, don't start multiple loops
