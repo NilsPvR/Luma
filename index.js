@@ -51,10 +51,6 @@ client.once('ready', () => {
 });
 
 
-let loop_stop = false;
-let running = false;
-
-
 client.on('message', message => {
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
