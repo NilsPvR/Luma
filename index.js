@@ -51,15 +51,26 @@ client.once('ready', () => {
 });
 
 
+/* possible params in commands:
+	name: string
+	aliases: array[string]
+	description: string
+	cooldown: int
+	guildOnly: boolean
+	args: boolean
+	usage: string
+*/
+// --- Command handler
 client.on('message', message => {
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
 	const args = message.content.slice(prefix.length).trim().split(/ +/);
 	const commandName = args.shift().toLowerCase();
 
-	if (!client.commands.has(commandName)) return; // the command does not exist
+	const command = client.commands.get(commandName)
+		|| client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
-	const command = client.commands.get(commandName);
+	if (!command) return; // cmd doesn't exist
 
 	// --- Cooldown filter
 	const { cooldowns } = client;
@@ -70,7 +81,7 @@ client.on('message', message => {
 
 	const now = Date.now();
 	const timestamps = cooldowns.get(command.name); // reference to the collection for this command
-	const cooldownAmount = (command.cooldown || 3) * 1000; // default 3s
+	const cooldownAmount = (command.cooldown || 1) * 1000; // default 1s
 
 	if (timestamps.has(message.author.id)) { // the author has used this cmd before
 		// get last used timestamp -> add cooldownAmount
@@ -93,7 +104,13 @@ client.on('message', message => {
 
 	// --- Argument filter
 	if (command.args && !args.length) {
-		return message.channel.send(`You didn't provide any arguments, ${message.author}!`);
+		let reply = message.channel.send(`You didn't provide any arguments, ${message.author}!`);
+
+		if (command.usage) {
+			reply += `\nUse the command like this: \`${prefix}${command.name} ${command.usage}\``;
+		}
+
+		return message.channel.send(reply);
 	}
 
 

@@ -2,12 +2,10 @@ module.exports = {
 	name: 'prune',
 	description: 'Delete messages',
 	guildOnly: true,
+	args: true,
 	execute(message, args) {
 		const amount = parseInt(args[0]);
-		if (!args.length) {
-			return message.reply('you didn\'t provide a amount to delete');
-		}
-		else if (isNaN(amount)) {
+		if (isNaN(amount)) {
 			return message.reply('that doesn\'t seem to be a valid number.');
 		}
 		else if (amount === 0) {
