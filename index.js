@@ -4,7 +4,7 @@ dotenv.config();
 
 const Discord = require('discord.js');
 
-const { prefix } = require('./config.json');
+const { prefix, default_cooldown } = require('./config.json');
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
@@ -68,6 +68,7 @@ client.on('message', message => {
 	const commandName = args.shift().toLowerCase(); // the command which user has entered
 
 	const command = client.commands.get(commandName)
+		// For every command in the collection check if it has aliases, if so check if the user sent cmd is included in the array
 		|| client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName)); // is the cmd user entered a command or alias?
 
 	if (!command) return; // cmd doesn't exist
@@ -81,7 +82,7 @@ client.on('message', message => {
 
 	const now = Date.now();
 	const timestamps = cooldowns.get(command.name); // reference to the collection for this command
-	const cooldownAmount = (command.cooldown || 1) * 1000; // default 1s
+	const cooldownAmount = (command.cooldown || default_cooldown) * 1000; // default is defined in config.json
 
 	if (timestamps.has(message.author.id)) { // the author has used this cmd before
 		// get last used timestamp -> add cooldownAmount
@@ -104,7 +105,7 @@ client.on('message', message => {
 
 	// --- Argument filter
 	if (command.args && !args.length) {
-		let reply = message.channel.send(`You didn't provide any arguments, ${message.author}!`);
+		let reply = `You didn't provide any arguments, ${message.author}!`;
 
 		if (command.usage) {
 			reply += `\nUse the command like this: \`${prefix}${command.name} ${command.usage}\``;
