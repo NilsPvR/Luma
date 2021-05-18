@@ -22,9 +22,9 @@ module.exports = {
 		if(!args.length) {
 			// could also make a js which contains category information -> get a name and stuff from that
 			data.push('Here\'s a list of available command categories:');
-			data.push(`${categories.join(', ')}`);
-			data.push(`\nYou can send \`${prefix}help [categorie name]\` to get info on a categorie`);
-			data.push(`Use \`${prefix}help all\` to get a complete list of all commands`);
+			data.push(`\n\`${categories.join('`, `')}\``);
+			data.push(`\n\`${prefix}help [categorie name]\` and I'll show you info about a category`);
+			data.push(`\`${prefix}help all\` and I'll provide you with a list of all commands`);
 
 			return message.channel.send(data, { split: true });
 		}
@@ -78,9 +78,9 @@ module.exports = {
 				cateCommands.set(command.name, command);
 			}
 
-			data.push('Here\'s a list of all my commands:');
+			data.push(`These are all commands in the category "${categorie}:`);
 			data.push(`\`${cateCommands.map(command => command.name).join('` | `')}\``);
-			data.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command`);
+			data.push(`\n\`${prefix}help [command name]\` and I'll show you detailed info on the command`);
 
 			return message.channel.send(data, { split: true });
 		}
@@ -89,7 +89,7 @@ module.exports = {
 		const command = commands.get(helpArg) || commands.find(c => c.aliases && c.aliases.includes(helpArg));
 
 		if (!command) {
-			return message.reply(`<@${message.author.id}> that's not a valid category- or commandname!`);
+			return message.channel.send(`<@${message.author.id}> that's not a valid category- or commandname!`);
 		}
 
 		data.push(`**Name:** ${command.name}`);
@@ -98,7 +98,7 @@ module.exports = {
 		if (command.description) data.push(`**Description:** ${command.description}`);
 		if (command.usage) data.push(`**Usage:** ${prefix}${command.name} ${command.usage}`);
 
-		data.push(`**Cooldown:** ${command.cooldown || default_cooldown} second(s)`);
+		data.push(`**Cooldown:** ${command.cooldown ?? default_cooldown} second(s)`);
 
 		message.channel.send(data, { split: true });
 	},

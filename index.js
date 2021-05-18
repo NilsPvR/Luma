@@ -82,7 +82,7 @@ client.on('message', message => {
 
 	const now = Date.now();
 	const timestamps = cooldowns.get(command.name); // reference to the collection for this command
-	const cooldownAmount = (command.cooldown || default_cooldown) * 1000; // default is defined in config.json
+	const cooldownAmount = (command.cooldown ?? default_cooldown) * 1000; // default is defined in config.json
 
 	if (timestamps.has(message.author.id)) { // the author has used this cmd before
 		// get last used timestamp -> add cooldownAmount
