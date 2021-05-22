@@ -28,7 +28,7 @@ const getAllFiles = (dirPath, arrayOfFiles) => {
 			// recursive call
 			arrayOfFiles = getAllFiles(dirPath + '/' + file, arrayOfFiles);
 		}
-		else { // it's a file
+		else if (file.endsWith('.js')) { // it's a js file
 			arrayOfFiles.push(path.join(__dirname, dirPath, '/', file)); // append absolute file path to array
 		}
 	});
