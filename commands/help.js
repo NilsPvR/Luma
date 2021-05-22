@@ -16,7 +16,7 @@ module.exports = {
 			readdirSync(source, { withFileTypes: true })
 				.filter(dirent => dirent.isDirectory()) // only keep directories
 				.map(dirent => dirent.name);
-		const categories = getDirectories(__dirname);
+		const categories = getDirectories(__dirname).filter(categorie => categorie.toLowerCase() !== 'hidden');
 
 		// --- BASIC HELP COMMAND
 		if(!args.length) {
@@ -78,7 +78,7 @@ module.exports = {
 				cateCommands.set(command.name, command);
 			}
 
-			data.push(`These are all commands in the category "${categorie}:`);
+			data.push(`These are all commands in the category "${categorie}":`);
 			data.push(`\`${cateCommands.map(command => command.name).join('` | `')}\``);
 			data.push(`\n\`${prefix}help [command name]\` and I'll show you detailed info on the command`);
 
