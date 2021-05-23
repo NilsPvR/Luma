@@ -22,7 +22,8 @@ const getAllFiles = (dirPath, arrayOfFiles) => {
 module.exports = {
 	name: 'reload',
 	aliases: ['r'],
-	description: 'Reload a command',
+	description: 'Reload a specific or all command(s)',
+	usage: '<command name>',
 	execute(message, args) {
 		if (!args.length) { // reload all commands
 			let mSuccess = 0; // amount successful reloads
@@ -51,27 +52,29 @@ module.exports = {
 			return message.channel.send(data);
 		}
 		const commandName = args[0].toLowerCase();
-		const command = message.client.commands.get(commandName)
+		// given command
+		const gCommand = message.client.commands.get(commandName)
 			|| message.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
 
-		if (!command) {
+		if (!gCommand) {
 			return message.channel.send(`I couldn't find a command named \`${commandName}\``);
 		}
 		// subfolder not yet included !!!!
-		const commandFolders = fs.readdirSync('./commands');
-		const folderName = commandFolders.find(folder => fs.readdirSync(`./commands/${folder}`).includes(`${command.name}.js`));
+		const commandFiles = getAllFiles('../../commands');
+		console.log(commandFiles);
+		const commandPath = commandFiles.find(command => require(command).name.toLowerCase() == gCommand.name);
 
-		delete require.cache[require.resolve(`../${folderName}/${command.name}.js`)]; // delete out of the cache
+		delete require.cache[require.resolve(commandPath)]; // delete out of the cache
 
 		try {
-			const newCommand = require(`../${folderName}/${command.name}.js`); // rerequire
+			const newCommand = require(commandPath); // rerequire
 			message.client.commands.set(newCommand.name, newCommand); // set in collection
 			message.channel.send(`Command \`${newCommand.name}\` was reloaded!`);
 		}
 		catch (error) {
 			console.error(error);
-			message.channel.send(`A error occured while reloading the command \`${command.name}\`:\n${error.message}`);
+			message.channel.send(`A error occured while reloading the command \`${gCommand.name}\`:\n${error.message}`);
 		}
 	},
 };
