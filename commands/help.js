@@ -1,6 +1,5 @@
 const { prefix, default_cooldown } = require('../config.json');
 const { readdirSync } = require('fs');
-const pJoin = require('path').join;
 const Discord = require('discord.js');
 module.exports = {
 	name: 'help',
@@ -38,7 +37,7 @@ module.exports = {
 
 				const cateCommands = new Discord.Collection(); // categoryCommands
 				// get all the files for current category
-				const specificCmdFiles = readdirSync(pJoin('./commands', '/', categorie))
+				const specificCmdFiles = readdirSync(`./commands/${categorie}`)
 					.filter(file => file.endsWith('.js'));
 
 				for (const file of specificCmdFiles) {
@@ -70,7 +69,7 @@ module.exports = {
 			// the function will add all subcategories with their according commands and their subcategories ... to the data array
 			const handleSubCategories = (source, indent) => { // source is 'cateogrie_folder' in initial call
 				const subCategories = getDirectories(`./commands/${source}`);
-				console.log('all g number2');
+
 				// loop all categories
 				for (const subCategorie of subCategories) {
 					const subCateCommands = new Discord.Collection(); // subCategoryCommands
@@ -95,7 +94,7 @@ module.exports = {
 
 			const cateCommands = new Discord.Collection(); // categoryCommands
 			// gets all commands for the category
-			const specificCmdFiles = readdirSync(pJoin('./commands/', categorie))
+			const specificCmdFiles = readdirSync(`./commands/${categorie}`)
 				.filter(file => file.endsWith('.js'));
 
 			for (const file of specificCmdFiles) {
