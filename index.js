@@ -57,6 +57,7 @@ client.once('ready', () => {
 	description: string
 	cooldown: int
 	guildOnly: boolean
+	permissions: string
 	args: boolean
 	usage: string
 */
@@ -101,6 +102,15 @@ client.on('message', message => {
 	// --- DM filter
 	if (command.guildOnly && message.channel.type === 'dm') {
 		return message.reply('This command no work in my DMs :/');
+	}
+
+	// --- Permissions filter
+	if (command.permissions) {
+		const authorPerms = message.channel.permissionsFor(message.author);
+		const permissionsText = command.permissions.toLowerCase().replace('_', ' ');
+		if (!authorPerms || !authorPerms.has(command.permissions)) {
+			return message.reply(`To be able to execute this command you need \`${permissionsText}\` permissions!`);
+		}
 	}
 
 	// --- Argument filter
