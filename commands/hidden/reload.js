@@ -62,7 +62,6 @@ module.exports = {
 		}
 		// subfolder not yet included !!!!
 		const commandFiles = getAllFiles('../../commands');
-		console.log(commandFiles);
 		const commandPath = commandFiles.find(command => require(command).name.toLowerCase() == gCommand.name);
 
 		delete require.cache[require.resolve(commandPath)]; // delete out of the cache
