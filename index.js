@@ -1,9 +1,15 @@
 const dotenv = require('dotenv');
 dotenv.config();
+const { prefix } = require('./config.json');
 
 const Discord = require('discord.js');
 
-const client = new Discord.Client();
+const client = new Discord.Client({
+	disableMentions: 'everyone',
+	presence: {
+		activity: { name: `${prefix}help | ${prefix}info`, type: 'LISTENING' },
+	},
+});
 client.commands = new Discord.Collection();
 client.cooldowns = new Discord.Collection(); // key = command_name, value = Collection(key = user_id, value = last time used cmd by this user)
 
