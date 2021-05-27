@@ -1,7 +1,32 @@
+const { MessageAttachment } = require('discord.js');
+
 module.exports = {
+	attachment: new MessageAttachment('./assets/kackbild.jpg'),
 	name: 'beep',
 	description: 'Boop',
-	execute(message) {
-		message.channel.send('Boop.');
+	template: 'simple',
+	execute() {
+		return {
+			description: '**Boop.**',
+			thumbnail: {
+				url: 'attachment://kackbild.jpg',
+			},
+			fields: [
+				{
+					name: 'Regular field title',
+					value: 'Some value here',
+				},
+				{
+					name: 'inline field title',
+					value: 'some value here',
+					inline: true,
+				},
+				{
+					name: 'second inline',
+					value: 'some value her',
+					inline: true,
+				},
+			],
+		};
 	},
 };

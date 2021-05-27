@@ -15,6 +15,11 @@ module.exports = {
 			permissions: string
 			args: boolean
 			usage: string
+			template: string for an embed template, this allows to not have to set every embed part per command, only necessary contents are parsed
+				The command should return an object containing:
+					TBD .... !
+				Options:
+					simple: only a description
 		*/
 		// --- Command handler
 
@@ -89,7 +94,21 @@ module.exports = {
 
 		try {
 			// get the command, call execute method with arguments
-			command.execute(message, args, matchedPrefix);
+			const ec = command.execute(message, args, matchedPrefix); // embedContent
+
+			if (ec && command.template) {
+				switch (command.template) {
+				case 'simple':
+					ec.color = '#d47633';
+					break;
+
+				default:
+					console.log('Whoops an invalid template has been defined');
+				}
+
+				if (command.attachment) message.channel.send({ files: [command.attachment], embed: ec });
+				else message.channel.send({ embed: ec });
+			}
 		}
 		catch (error) {
 			// error detection
