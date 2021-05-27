@@ -48,10 +48,10 @@ for (const file of eventFiles) {
 	const event = require(`./events/${file}`);
 	if (event.once) {
 		// events that should run once
-		client.once(event.name, (...args) => event.execute(...args, client));
+		client.once(event.name, (...args) => event.run(...args, client));
 	}
 	else {
-		client.on(event.name, (...args) => event.execute(...args, client));
+		client.on(event.name, (...args) => event.run(...args, client));
 	}
 }
 

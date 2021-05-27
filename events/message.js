@@ -5,7 +5,7 @@ const Discord = require('discord.js');
 const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 module.exports = {
 	name: 'message',
-	execute(message, client) {
+	run(message, client) {
 		/* possible params in commands:
 			name: string
 			aliases: array[string]
@@ -51,7 +51,7 @@ module.exports = {
 				const timeLeft = (expirationTime - now) / 1000;
 				if (timeLeft.toFixed(1) == 1.0) {
 					return message.reply(`please wait 1 more second before reusing the \`${command.name}\` command.`)
-						.then(msg => msg.delte({ timeout: default_deltetime }));
+						.then(msg => msg.delete({ timeout: default_deltetime }));
 				}
 				return message.reply(`please wait ${timeLeft.toFixed(1)} more seconds before reusing the \`${command.name}\` command.`)
 					.then(msg => msg.delete({ timout: default_deltetime }));
