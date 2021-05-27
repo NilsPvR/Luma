@@ -1,5 +1,8 @@
 const { prefix, default_cooldown } = require('../config.json');
 const Discord = require('discord.js');
+
+// change special caracters so that they don't terminate the regex
+const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 module.exports = {
 	name: 'message',
 	execute(message, client) {
@@ -15,9 +18,12 @@ module.exports = {
 		*/
 		// --- Command handler
 
-		if (!message.content.startsWith(prefix) || message.author.bot) return;
+		const prefixRegex = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex(prefix)})\\s*`); // bot tagged or prefix
+		if (!prefixRegex.test(message.content) || message.author.bot) return;
 
-		const args = message.content.slice(prefix.length).trim().split(/ +/);
+		const [, matchedPrefix] = message.content.match(prefixRegex); // get used prefix
+
+		const args = message.content.slice(matchedPrefix.length).trim().split(/ +/);
 		const commandName = args.shift().toLowerCase(); // the command which user has entered
 
 		const command = client.commands.get(commandName)
