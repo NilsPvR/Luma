@@ -1,4 +1,4 @@
-const { prefix, default_cooldown } = require('../config.json');
+const { prefix, default_cooldown, default_deltetime } = require('../config.json');
 const Discord = require('discord.js');
 
 // change special caracters so that they don't terminate the regex
@@ -49,8 +49,12 @@ module.exports = {
 
 			if (now < expirationTime) { // epirationTime has not been reached yet
 				const timeLeft = (expirationTime - now) / 1000;
-				if (timeLeft.toFixed(1) == 1.0) return message.reply(`please wait 1 more second before reusing the \`${command.name}\` command.`);
-				return message.reply(`please wait ${timeLeft.toFixed(1)} more seconds before reusing the \`${command.name}\` command.`);
+				if (timeLeft.toFixed(1) == 1.0) {
+					return message.reply(`please wait 1 more second before reusing the \`${command.name}\` command.`)
+						.then(msg => msg.delte({ timeout: default_deltetime }));
+				}
+				return message.reply(`please wait ${timeLeft.toFixed(1)} more seconds before reusing the \`${command.name}\` command.`)
+					.then(msg => msg.delete({ timout: default_deltetime }));
 			}
 		}
 		// not returned yet -> command not used before / expirationTime has passed
@@ -85,7 +89,7 @@ module.exports = {
 
 		try {
 			// get the command, call execute method with arguments
-			command.execute(message, args);
+			command.execute(message, args, matchedPrefix);
 		}
 		catch (error) {
 			// error detection

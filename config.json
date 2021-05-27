@@ -1,4 +1,5 @@
 {
 	"prefix": "<",
-	"default_cooldown": 1
+	"default_cooldown": 1,
+	"default_deltetime": 3000
 }

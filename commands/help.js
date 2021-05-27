@@ -1,4 +1,4 @@
-const { prefix, default_cooldown } = require('../config.json');
+const { prefix, default_cooldown, default_deltetime } = require('../config.json');
 const { readdirSync } = require('fs');
 const Discord = require('discord.js');
 module.exports = {
@@ -53,7 +53,10 @@ module.exports = {
 			return message.author.send(data, { split: true })
 				.then(() => {
 					if (message.channel.type === 'dm') return;
-					message.channel.send('Check your DM\'s');
+					message.channel.send('Check your DM\'s')
+						.then(msg => {
+							msg.delete({ timeout: default_deltetime });
+						});
 				})
 				.catch(error => {
 					console.error(`Could not send help DM to ${message.author.tag}.\n`, error);
