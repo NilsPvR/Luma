@@ -3,6 +3,8 @@ const Discord = require('discord.js');
 
 // change special caracters so that they don't terminate the regex
 const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const embedfile = require('../Lutil/embed.js');
 module.exports = {
 	name: 'message',
 	run(message, client) {
@@ -95,20 +97,8 @@ module.exports = {
 		try {
 			// get the command, call execute method with arguments
 			const ec = command.execute(message, args, matchedPrefix); // embedContent
-
-			if (ec && command.template) {
-				switch (command.template) {
-				case 'simple':
-					ec.color = '#d47633';
-					break;
-
-				default:
-					console.log('Whoops an invalid template has been defined');
-				}
-
-				if (command.attachment) message.channel.send({ files: [command.attachment], embed: ec });
-				else message.channel.send({ embed: ec });
-			}
+			// evalute templates and flags -> then manipulate the embed objet and send it
+			embedfile.execute(message, ec, command);
 		}
 		catch (error) {
 			// error detection

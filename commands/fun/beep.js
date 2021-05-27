@@ -7,6 +7,7 @@ module.exports = {
 	template: 'simple',
 	execute() {
 		return {
+			flag: 'error',
 			description: '**Boop.**',
 			thumbnail: {
 				url: 'attachment://kackbild.jpg',
