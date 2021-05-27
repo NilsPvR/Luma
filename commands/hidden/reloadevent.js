@@ -13,7 +13,7 @@ module.exports = {
 			const errorMsg = [];
 
 			const eventFiles = fs.readdirSync(join(__dirname, '../../events')).filter(file => file.endsWith('.js'));
-			console.log(eventFiles);
+
 			for (const file of eventFiles) {
 				delete require.cache[require.resolve(`../../events/${file}`)];
 
@@ -23,7 +23,6 @@ module.exports = {
 					message.client.removeAllListeners(event.name);
 					if (event.once) {
 						// events that should run once
-						console.log('2');
 						try {
 							message.client.once(event.name, (...evArgs) => event.run(...evArgs, message.client));
 						}
@@ -32,10 +31,8 @@ module.exports = {
 						}
 					}
 					else {
-						console.log('3');
 						message.client.on(event.name, (...evArgs) => event.run(...evArgs, message.client));
 					}
-					console.log('4');
 					eSuccess++;
 				}
 				catch (error) {
