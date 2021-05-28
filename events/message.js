@@ -61,7 +61,7 @@ module.exports = {
 						.then(msg => msg.delete({ timeout: default_deltetime }));
 				}
 				return message.reply(`please wait ${timeLeft.toFixed(1)} more seconds before reusing the \`${command.name}\` command.`)
-					.then(msg => msg.delete({ timout: default_deltetime }));
+					.then(msg => msg.delete({ timeout: default_deltetime }));
 			}
 		}
 		// not returned yet -> command not used before / expirationTime has passed
