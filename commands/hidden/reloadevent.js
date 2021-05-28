@@ -5,6 +5,7 @@ module.exports = {
 	aliases: ['re', 'reloade', 'revent'],
 	description: 'Reload event handlers',
 	usage: '<event name>',
+	template: 'simple',
 	execute(message, args) {
 		if (!args.length) { // reload all commands
 			let eSuccess = 0; // amount successful reloads
@@ -15,9 +16,8 @@ module.exports = {
 			const eventFiles = fs.readdirSync(join(__dirname, '../../events')).filter(file => file.endsWith('.js'));
 
 			for (const file of eventFiles) {
-				delete require.cache[require.resolve(`../../events/${file}`)];
-
 				try {
+					delete require.cache[require.resolve(`../../events/${file}`)];
 					const event = require(`../../events/${file}`); // rerequire
 
 					message.client.removeAllListeners(event.name);
@@ -37,15 +37,23 @@ module.exports = {
 				}
 				catch (error) {
 					console.error(error);
-					errorMsg.push(error.message);
+					errorMsg.push(error.message.replace(/Nils/g, '\\[username]'));
 					eFail++;
 				}
 			}
 
-			if (eSuccess) data.push(`Reloaded ${eSuccess} event handlers succesfully.`);
-			if (eFail) data.push(`${eFail} event handlers could not be reloaded. The following errors have been cought:\n${errorMsg}`);
+			if (eSuccess) data.push(`Reloaded **${eSuccess}** event handlers succesfully.`);
+			if (eFail) data.push(`**${eFail}** event handlers could not be reloaded. The following errors have been cought:\n${errorMsg}`);
 
-			return message.channel.send(data);
+			if (!eFail && eSuccess) { // none failed, all successful
+				return { flag: 'success', description: data.join('\n') };
+			}
+			else if (eFail && !eSuccess) { // all failed, none succeeded
+				return { flag: 'error',	description: data.join('\n') };
+			}
+			else {
+				return { description: data.join('\n') };
+			}
 		}
 	},
 };

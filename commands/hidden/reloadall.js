@@ -1,19 +1,23 @@
+const embeder = require('../../Lutil/embed');
 module.exports = {
 	name: 'reloadall',
 	aliases: ['ra', 'reloada', 'rall'],
 	description: 'This command will call all other reload commands. Basically reloading every module.',
+	template: 'simple',
 	execute(message, args) {
-		const reloadFiles = [ 'reloadutil.js', 'reload.js', 'reloadevent.js' ];
+		const reloadFiles = [ 'reloadutil', 'reload', 'reloadevent' ];
 
 		for (const file of reloadFiles) {
-			delete require.cache[require.resolve(`../../commands/hidden/${file}`)];
 			try {
-				const reloader = require(`../../commands/hidden/${file}`);
-				reloader.execute(message, args);
+				delete require.cache[require.resolve(`../../commands/hidden/${file}.js`)];
+				const reloader = require(`../../commands/hidden/${file}.js`);
+
+				// call the reload command and parse the response to the embeder module with additional args
+				embeder.execute(message, reloader.execute(message, args), message.client.commands.get(file));
 			}
 			catch (error) {
 				console.error(error);
-				message.channel.send('Something went wrong while realoding!');
+				return { flag: 'error', description: `Somewthing went wrong while executing \`${file}\`` };
 			}
 		}
 	},

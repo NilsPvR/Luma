@@ -7,33 +7,41 @@ module.exports = {
 	aliases: ['ru', 'reloadu', 'rutil'],
 	description: 'Reload utility files',
 	usage: '<util name>',
+	template: 'simple',
 	execute(message, args) {
 		if (!args.length) { // reload all commands
-			let eSuccess = 0; // amount successful reloads
-			let eFail = 0; // amount unsuccesful reloads
+			let uSuccess = 0; // amount successful reloads
+			let uFail = 0; // amount unsuccesful reloads
 			const data = [];
 			const errorMsg = [];
 
 			const utilFiles = fs.readdirSync(join(__dirname, '../../Lutil')).filter(file => file.endsWith('.js'));
 
 			for (const file of utilFiles) {
-				delete require.cache[require.resolve(`../../Lutil/${file}`)];
-
 				try {
+					delete require.cache[require.resolve(`../../Lutil/${file}`)];
 					require(`../../Lutil/${file}`); // rerequire
-					eSuccess++;
+					uSuccess++;
 				}
 				catch (error) {
 					console.error(error);
-					errorMsg.push(error.message);
-					eFail++;
+					errorMsg.push(error.message.replace(/Nils/g, '\\[username]'));
+					uFail++;
 				}
 			}
 
-			if (eSuccess) data.push(`Reloaded ${eSuccess} utility files succesfully.`);
-			if (eFail) data.push(`${eFail} utility files could not be reloaded. The following errors have been cought:\n${errorMsg}`);
+			if (uSuccess) data.push(`Reloaded **${uSuccess}** utility files succesfully.`);
+			if (uFail) data.push(`**${uFail}** utility files could not be reloaded. The following errors have been cought:\n${errorMsg}`);
 
-			return message.channel.send(data);
+			if (!uFail && uSuccess) { // none failed, all successful
+				return { flag: 'success', description: data.join('\n') };
+			}
+			else if (uFail && !uSuccess) { // all failed, none succeeded
+				return { flag: 'error',	description: data.join('\n') };
+			}
+			else {
+				return { description: data.join('\n') };
+			}
 		}
 	},
 };
