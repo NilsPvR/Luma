@@ -32,7 +32,7 @@ module.exports = {
 			const data = [];
 			const errorMsg = [];
 			const allFIles = getAllFiles('../../commands');
-			allFIles.push('randomshit');
+
 			for (const commandPath of allFIles) {
 				try {
 					delete require.cache[require.resolve(commandPath)]; // delete out of the cache
