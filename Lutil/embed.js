@@ -12,6 +12,12 @@ module.exports = {
 				else if (ec.flag == 'success') {
 					ec.color = colors.green;
 				}
+				else if (ec.flag == 'whoops') {
+					ec.color = colors.red;
+					ec.title = 'Whoops exception!';
+
+					ec.description = 'Something went wrong while executing your command. This issue will be resolved as soon as possible.';
+				}
 				else {
 					ec.color = colors.orange;
 				}
