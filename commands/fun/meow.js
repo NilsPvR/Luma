@@ -1,5 +1,7 @@
 let loop_stop = false;
 let running = false;
+const { MessageEmbed } = require('discord.js');
+const { colors } = require('../../config.json');
 
 module.exports = {
 	name: 'meow',
@@ -8,13 +10,18 @@ module.exports = {
 	cooldown: 5,
 	guildOnly: true,
 	permissions: 'ADMINISTRATOR',
+	template: 'simple',
 	execute(message, args, matchedPrefix) {
 		const commandName = message.content.slice(matchedPrefix.length).trim().split(/ +/).shift().toLowerCase(); // the command which user has entered
 
 		if (commandName === 'meow') {
 			if (!args.length) {
 				if (!running) { // don't start multiple loops
-					message.channel.send('You found a cat!');
+					const meowEmbed = new MessageEmbed()
+						.setColor(colors.green)
+						.setDescription('You found a cat!');
+					message.channel.send(meowEmbed);
+
 					loop_stop = false;
 					running = true;
 					const interval = setInterval (() => {
@@ -31,23 +38,38 @@ module.exports = {
 			else if (args[0] == 'stop') {
 				if (running) { // when cat is running
 					loop_stop = true;
-					message.channel.send('The cat has been scared away!');
+					return {
+						flag: 'success',
+						description: 'The cat has been scared away!',
+					};
 				}
 				else {
-					message.channel.send('You can\'t scare any cats away right now!');
+					return {
+						flag: 'error',
+						description: 'You can\'t scare any cats away right now!',
+					};
 				}
 			}
 			else {
-				message.channel.send(`\`${args[0]}\` is not a valid cat argument`);
+				return {
+					flag: 'error',
+					description: `\`${args[0]}\` is not a valid cat argument`,
+				};
 			}
 		}
 		else if (commandName === 'woof') {
 			if (running) { // when cat is running
 				loop_stop = true;
-				message.channel.send('The cat has been scared away!');
+				return {
+					flag: 'success',
+					description: 'The cat has been scared away!',
+				};
 			}
 			else {
-				message.channel.send('You can\'t scare any cats away right now!');
+				return {
+					flag: 'error',
+					description: 'You can\'t scare any cats away right now!',
+				};
 			}
 		}
 

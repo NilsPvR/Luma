@@ -1,17 +1,19 @@
+const { colors } = require('../config.json');
+
 module.exports = {
 	execute(message, ec, command) {
 		if (ec && command.template) {
 			switch (command.template) {
 			case 'simple':
 				if (ec.flag == 'error') {
-					ec.color = '#c2110e';
-					ec.title = ':x:  Error!';
+					ec.color = colors.red;
+					ec.title = ':x:  Error! ' + (ec.title ?? '');
 				}
 				else if (ec.flag == 'success') {
-					ec.color = '#529c08';
+					ec.color = colors.green;
 				}
 				else {
-					ec.color = '#d68727';
+					ec.color = colors.orange;
 				}
 				break;
 

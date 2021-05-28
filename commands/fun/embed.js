@@ -3,7 +3,8 @@ module.exports = {
 	template: 'simple',
 	execute() {
 		return {
-			flag: 'success',
+			flag: '',
+			title: 'Nice title',
 			description: 'Nice embeded message',
 		};
 	},
