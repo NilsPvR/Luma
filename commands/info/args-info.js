@@ -6,11 +6,19 @@ module.exports = {
 	description: 'Info about arguments',
 	guildOnly: true,
 	args: true,
+	template: 'simple',
 	execute(message, args) {
 		const prefixRegex = new RegExp(`^(<@!?${message.client.user.id}>|${escapeRegex(prefix)})\\s*`); // bot tagged or prefix
 		const [, matchedPrefix] = message.content.match(prefixRegex); // get used prefix
 		const commandName = message.content.slice(matchedPrefix.length).trim().split(/ +/).shift().toLowerCase();
 
-		message.channel.send(`Command name: ${commandName}\nArguments: \`${args.join('` | `')}\`\nArgument amount: ${args.length}`);
+		return {
+			title: commandName,
+			description: `Arguments: \`${args.join('` | `')}\`\n`,
+
+			footer: {
+				text: `🠖Amount: ${args.length}`,
+			},
+		};
 	},
 };

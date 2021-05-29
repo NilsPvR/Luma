@@ -1,8 +1,21 @@
 module.exports = {
 	name: 'server',
-	description: 'Info about the server',
+	aliases: ['serverinfo'],
+	description: 'Detailed information about the server',
 	guildOnly: true,
+	template: 'simple',
 	execute(message) {
-		message.channel.send(`Server name: ${message.guild.name}\nTotal members: ${message.guild.memberCount}`);
+		return {
+			title: message.guild.name,
+
+			fields: {
+				name: '\u200b',
+				value: 'Members: ' + message.guild.memberCount,
+			},
+
+			footer: {
+				text: 'Serverinfo for: ' + message.guild.id,
+			},
+		};
 	},
 };

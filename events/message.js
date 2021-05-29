@@ -9,6 +9,7 @@ module.exports = {
 	name: 'message',
 	run(message, client) {
 		/* possible params in commands:
+			attachment: MessageAttachment Object
 			name: string
 			aliases: array[string]
 			description: string

@@ -1,4 +1,6 @@
 - Show subcategories in help all message
+- Support non mention user arguments
+	-> avatar in dm
 
 - When a category is called show info about the category (transfer collection in help to index)
 - When a cmd is called without required arguments -> show info about the cmd
