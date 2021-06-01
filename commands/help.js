@@ -6,7 +6,8 @@ module.exports = {
 	aliases: ['huh', 'commands'],
 	description: 'I\'ll help you',
 	usage: '[command name]',
-	execute(message, args) {
+	template: 'simple',
+	execute(message, args, matchedPrefix, commandName) {
 		const data = [];
 		const { commands } = message.client; // all commands
 
@@ -20,12 +21,20 @@ module.exports = {
 		// --- BASIC HELP COMMAND
 		if(!args.length) {
 			// could also make a js which contains category information -> get a name and stuff from that
-			data.push('Here\'s a list of available command categories:');
-			data.push(`\n\`${categories.join('`, `')}\``);
-			data.push(`\n\`${prefix}help [categorie name]\` and I'll show you info about a category`);
-			data.push(`\`${prefix}help all\` and I'll provide you with a list of all commands`);
 
-			return message.channel.send(data, { split: true });
+			return {
+				flag: 'success',
+
+				title: 'Help',
+				description: `Here's a list of available command categories\n\n\`${categories.join('`, `')}\``,
+
+				fields: [
+					{
+						name: '\u200b',
+						value: `\`${prefix}${commandName} [categorie name]\` and I'll show you info about a category\n\`${prefix}${commandName} all\` and I'll provide you with a list of all commands`,
+					},
+				],
+			};
 		}
 		// -- COMPLETE COMMAND LIST
 		else if (args[0].toLowerCase() == 'all') {
