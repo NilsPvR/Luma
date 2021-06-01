@@ -6,7 +6,7 @@ module.exports = {
 	template: 'simple',
 	execute(message) {
 		if (!message.mentions.users.size) {
-			console.log(message.mentions.users.first());
+
 			if (message.channel.type === 'dm') {
 				return { image: { url: message.author.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }) } };
 			}
