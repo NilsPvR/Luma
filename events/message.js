@@ -97,7 +97,7 @@ module.exports = {
 
 		try {
 			// get the command, call execute method with arguments
-			const ec = command.execute(message, args, matchedPrefix); // embedContent
+			const ec = command.execute(message, args, matchedPrefix, commandName); // embedContent
 			// evalute templates and flags -> then manipulate the embed objet and send it
 			embedfile.execute(message, ec, command);
 		}

@@ -1,11 +1,14 @@
 - Show subcategories in help all message
 - Support non mention user arguments
 	-> avatar in dm
+- Missing permissions detection for kick and prune (async / await ??)
 
+- In the embed util, flag for who executed the command footer -> "Requested by Metzok#0693 - 17:10"
 - When a category is called show info about the category (transfer collection in help to index)
 - When a cmd is called without required arguments -> show info about the cmd
 - Don't require prefix in DM
 - remake woof command -> alias of meow, then getting what command was called in the message
+- for command use a custom error message if args are necessary but not provided
 
 - Get a database rolling
 - EMBEDS everywhere

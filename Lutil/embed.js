@@ -27,8 +27,24 @@ module.exports = {
 				console.log('Whoops an invalid template has been defined');
 			}
 
-			if (command.attachment) message.channel.send({ files: [command.attachment], embed: ec });
-			else message.channel.send({ embed: ec });
+			if (command.attachment) {
+				message.channel.send({ files: [command.attachment], embed: ec })
+					.then(msg => {
+						if (ec.autodel) {
+							msg.delete({ timeout: ec.autodel * 1000 })
+								.catch(console.error);
+						}
+					});
+			}
+			else {
+				message.channel.send({ embed: ec })
+					.then(msg => {
+						if (ec.autodel) {
+							msg.delete({ timeout: ec.autodel * 1000 })
+								.catch(console.error);
+						}
+					});
+			}
 		}
 	},
 };
