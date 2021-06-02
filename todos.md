@@ -10,6 +10,8 @@
 - Don't require prefix in DM
 - remake woof command -> alias of meow, then getting what command was called in the message
 - for command use a custom error message if args are necessary but not provided
+- add error catchers for when people use "<\help [command name]" without replacing it (also for category)
+- confirm execution when more args then expected have been given, e.g. purge cmd
 
 - Get a database rolling
 - EMBEDS everywhere

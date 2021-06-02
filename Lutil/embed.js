@@ -7,7 +7,8 @@ module.exports = {
 			case 'simple':
 				if (ec.flag == 'error') {
 					ec.color = colors.red;
-					ec.title = ':x:  Error! ' + (ec.title ?? '');
+					ec.title = `Error! ${ec.title ?? ''}`;
+					ec.description = `:x: ${ec.description ?? 'Incorrect usage. Do `<help [command name]` for more information'}`;
 				}
 				else if (ec.flag == 'success') {
 					ec.color = colors.green;

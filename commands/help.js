@@ -9,6 +9,7 @@ module.exports = {
 	template: 'simple',
 	execute(message, args, matchedPrefix, commandName) {
 		const data = [];
+		const fields = [];
 		const { commands } = message.client; // all commands
 
 		// returns an array of strings with the direct subfolders of a given absolute path
@@ -18,24 +19,25 @@ module.exports = {
 				.map(dirent => dirent.name);
 		const categories = getDirectories(__dirname).filter(categorie => categorie.toLowerCase() !== 'hidden');
 
+
 		// --- BASIC HELP COMMAND
 		if(!args.length) {
 			// could also make a js which contains category information -> get a name and stuff from that
 
 			return {
-				flag: 'success',
-
 				title: 'Help',
 				description: `Here's a list of available command categories\n\n\`${categories.join('`, `')}\``,
 
 				fields: [
 					{
 						name: '\u200b',
-						value: `\`${prefix}${commandName} [categorie name]\` and I'll show you info about a category\n\`${prefix}${commandName} all\` and I'll provide you with a list of all commands`,
+						value: `Information on a category - \`${prefix}${commandName} [categorie name]\` \nList of all commands - \`${prefix}${commandName} all\``,
 					},
 				],
 			};
 		}
+
+
 		// -- COMPLETE COMMAND LIST
 		else if (args[0].toLowerCase() == 'all') {
 			data.push('Here\'s a list of all my commands:');
@@ -72,12 +74,15 @@ module.exports = {
 					message.reply('it seems like I can\'t DM you! Do you have DMs disabled?');
 				});
 		}
+
+
 		// --- INFO ON A CATEGORY
 		// subcategories can not be called individually -> only for order and visualisation
 		// loop through the collection and compare each entry with the sent argument
 		const categorie = categories.find(category => args[0].toLowerCase() == category.toLowerCase()); // using function to make ever category lowercase
 
 		if (categorie) {
+
 			// the function will add all subcategories with their according commands and their subcategories ... to the data array
 			const handleSubCategories = (source, indent) => { // source is 'cateogrie_folder' in initial call
 				const subCategories = getDirectories(`./commands/${source}`);
@@ -96,8 +101,9 @@ module.exports = {
 						subCateCommands.set(command.name, command);
 					}
 					indent = indent ?? '';
-					data.push(`\n${indent} Comamnds for the subcategory "${subCategorie}":`);
-					data.push(`${indent} \`${subCateCommands.map(command => command.name).join('` | `')}\``);
+					fields.push({ name: `\n${indent} ${subCategorie}`,
+						value: `${indent} \`${subCateCommands.map(command => command.name).join('` | `')}\``,
+					});
 
 					// recursive check for subcategories, the recursive call is ended by the for loop if there aren't any subCategories
 					handleSubCategories(`${source}/${subCategorie}`, indent + ':heavy_minus_sign:');
@@ -116,13 +122,21 @@ module.exports = {
 				cateCommands.set(command.name, command);
 			}
 
-			data.push(`These are all commands in the category "${categorie}":`);
-			data.push(`\`${cateCommands.map(command => command.name).join('` | `')}\``);
 			handleSubCategories(categorie);
 
-			data.push(`\n\`${prefix}help [command name]\` and I'll show you detailed info on the command`);
-			return message.channel.send(data, { split: true });
+			// embed content
+			const ec = {
+				title: `Category: ${categorie}`,
+				// if fields exist -> show subcategorie message
+				description: `\`${cateCommands.map(command => command.name).join('` | `')}\`${fields.length ? '\n\n**Subcategories with their commands**' : ''}`,
+			};
+
+			fields.push({ name: '\u200b', value: `Detailed information on a command - \`${prefix}help [command name]\`` });
+			ec.fields = fields;
+			return ec;
 		}
+
+
 		// --- INFO ON A CMD
 		const helpArg = args[0].toLowerCase(); // name of the command which should be descriped
 		const command = commands.get(helpArg) || commands.find(c => c.aliases && c.aliases.includes(helpArg));
@@ -132,11 +146,13 @@ module.exports = {
 				flag: 'error',
 
 				description: 'That\'s not a valid category- or commandname!',
+				footer: {
+					text: 'You can\'t call subcategories',
+				},
 			};
 		}
 
-		const ec = { title: command.name.toUpperCase() }; // embed content
-		const fields = [];
+		const ec = { title: `Command: ${command.name.toUpperCase()}` }; // embed content
 
 		if (command.description) {
 			fields.push({ name: 'Description\n', value: command.description, inline: false });
