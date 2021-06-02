@@ -128,17 +128,31 @@ module.exports = {
 		const command = commands.get(helpArg) || commands.find(c => c.aliases && c.aliases.includes(helpArg));
 
 		if (!command) {
-			return message.channel.send(`<@${message.author.id}> that's not a valid category- or commandname!`);
+			return {
+				flag: 'error',
+
+				description: 'That\'s not a valid category- or commandname!',
+			};
 		}
 
-		data.push(`**Name:** ${command.name}`);
+		const ec = { title: command.name.toUpperCase() }; // embed content
+		const fields = [];
 
-		if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(', ')}`);
-		if (command.description) data.push(`**Description:** ${command.description}`);
-		if (command.usage) data.push(`**Usage:** ${prefix}${command.name} ${command.usage}`);
+		if (command.description) {
+			fields.push({ name: 'Description\n', value: command.description, inline: false });
+			fields.push({ name: '\u200b', value: '\u200b' });
+		}
+		if (command.aliases) {
+			fields.push({ name: 'Aliases', value: command.aliases.join(', '), inline: true });
 
-		data.push(`**Cooldown:** ${command.cooldown ?? default_cooldown} second(s)`);
+		}
+		if (command.usage) {
+			fields.push({ name: 'Usage', value: `\`${prefix}${command.name} ${command.usage}\``, inline: true });
+		}
 
-		message.channel.send(data, { split: true });
+		fields.push({ name: 'Cooldown', value: command.cooldown ?? default_cooldown + ' second(s)', inline: true });
+
+		ec.fields = fields;
+		return ec;
 	},
 };
