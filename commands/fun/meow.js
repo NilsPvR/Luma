@@ -10,10 +10,9 @@ module.exports = {
 	cooldown: 5,
 	guildOnly: true,
 	permissions: 'ADMINISTRATOR',
+	botdev: true,
 	template: 'simple',
-	execute(message, args, matchedPrefix) {
-		const commandName = message.content.slice(matchedPrefix.length).trim().split(/ +/).shift().toLowerCase(); // the command which user has entered
-
+	execute(message, args, matchedPrefix, commandName) {
 		if (commandName === 'meow') {
 			if (!args.length) {
 				if (!running) { // don't start multiple loops

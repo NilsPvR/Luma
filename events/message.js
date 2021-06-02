@@ -1,4 +1,4 @@
-const { prefix, default_cooldown, default_deltetime } = require('../config.json');
+const { prefix, default_cooldown, default_deltetime, botdev } = require('../config.json');
 const Discord = require('discord.js');
 
 // change special caracters so that they don't terminate the regex
@@ -15,6 +15,7 @@ module.exports = {
 			description: string
 			cooldown: int
 			guildOnly: boolean
+			botdev: boolean
 			permissions: string
 			args: boolean
 			usage: string
@@ -72,6 +73,11 @@ module.exports = {
 		// --- DM filter
 		if (command.guildOnly && message.channel.type === 'dm') {
 			return message.reply('This command no work in my DMs :/');
+		}
+
+		// --- Botdev filter
+		if (command.botdev && !botdev.includes(message.author.id)) {
+			return message.reply('You not owner!');
 		}
 
 		// --- Permissions filter

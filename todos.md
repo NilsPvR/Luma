@@ -2,7 +2,6 @@
 - Support non mention user arguments
 	-> avatar in dm
 - Missing permissions detection for kick and prune (async / await ??)
-- Update commands where matchedPrefix was used to determine commandName (since it is now parsed directly)
 
 - In the embed util, flag for who executed the command footer -> "Requested by Metzok#0693 - 17:10"
 - When a category is called show info about the category (transfer collection in help to index)
@@ -22,3 +21,4 @@ Hypixel bw command
 
 <h2>Done!</h2>
 - Filter the collection of commands in index.js
+- Update commands where matchedPrefix was used to determine commandName (since it is now parsed directly)
