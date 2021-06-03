@@ -1,9 +1,9 @@
 module.exports = {
 	name: 'embed',
-	template: 'simple',
+	template: 'requester',
 	execute() {
 		return {
-			flag: '',
+			flag: 'error',
 			title: 'Nice title',
 			description: 'Nice embeded message',
 		};

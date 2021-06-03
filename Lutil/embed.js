@@ -1,26 +1,44 @@
 const { colors } = require('../config.json');
 
+const basicFlag = ec => {
+	switch (ec.flag) {
+	case 'error' :
+		ec.color = colors.red;
+		ec.title = `Error! ${ec.title ?? ''}`;
+		ec.description = `:x: ${ec.description ?? 'Incorrect usage. Do `<help [command name]` for more information'}`;
+		break;
+
+	case 'success' :
+		ec.color = colors.green;
+		break;
+
+	case 'whoops' :
+		ec.color = colors.red;
+		ec.title = 'Whoops exception!';
+
+		ec.description = 'Something went wrong while executing your command. This issue will be resolved as soon as possible.';
+		break;
+
+	default :
+		ec.color = colors.orange;
+	}
+};
+
 module.exports = {
 	execute(message, ec, command) {
 		if (ec && command.template) {
 			switch (command.template) {
 			case 'simple':
-				if (ec.flag == 'error') {
-					ec.color = colors.red;
-					ec.title = `Error! ${ec.title ?? ''}`;
-					ec.description = `:x: ${ec.description ?? 'Incorrect usage. Do `<help [command name]` for more information'}`;
-				}
-				else if (ec.flag == 'success') {
-					ec.color = colors.green;
-				}
-				else if (ec.flag == 'whoops') {
-					ec.color = colors.red;
-					ec.title = 'Whoops exception!';
+				basicFlag(ec);
+				break;
 
-					ec.description = 'Something went wrong while executing your command. This issue will be resolved as soon as possible.';
-				}
-				else {
-					ec.color = colors.orange;
+			case 'requester' :
+				basicFlag(ec);
+				if ((ec.flag == 'success' || ec.flag == 'error' || ec.flag === '') && message.channel.type !== 'dm') { // only in guilds
+					ec.footer = {
+						text: `requested by ${message.member.displayName}`,
+					};
+					ec.timestamp = new Date();
 				}
 				break;
 

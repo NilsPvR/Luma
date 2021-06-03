@@ -64,4 +64,5 @@ for (const file of getAllFiles('./commands')) {
 }
 
 
-client.login(process.env.TOKEN);
+client.login(process.env.TOKEN)
+	.catch(console.error);
