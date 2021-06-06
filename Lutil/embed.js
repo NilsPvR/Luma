@@ -1,4 +1,4 @@
-const { colors } = require('../config.json');
+const { colors, default_deltetime } = require('../config.json');
 
 const basicFlag = ec => {
 	switch (ec.flag) {
@@ -34,9 +34,9 @@ module.exports = {
 
 			case 'requester' :
 				basicFlag(ec);
-				if ((ec.flag == 'success' || ec.flag == 'error' || ec.flag === '') && message.channel.type !== 'dm') { // only in guilds
+				if ((ec.flag !== 'whoops') && message.channel.type !== 'dm') { // only in guilds
 					ec.footer = {
-						text: `requested by ${message.member.displayName}`,
+						text: `Requested by ${message.member.displayName}`,
 					};
 					ec.timestamp = new Date();
 				}
@@ -50,7 +50,7 @@ module.exports = {
 				message.channel.send({ files: [command.attachment], embed: ec })
 					.then(msg => {
 						if (ec.autodel) {
-							msg.delete({ timeout: ec.autodel * 1000 })
+							msg.delete({ timeout: ec.autodel === true ? default_deltetime * 1000 : ec.autodel * 1000 })
 								.catch(console.error);
 						}
 						if (ec.dm) {
@@ -65,7 +65,7 @@ module.exports = {
 				message.channel.send({ embed: ec })
 					.then(msg => {
 						if (ec.autodel) {
-							msg.delete({ timeout: ec.autodel * 1000 })
+							msg.delete({ timeout: ec.autodel === true ? default_deltetime * 1000 : ec.autodel * 1000 })
 								.catch(console.error);
 						}
 						if (ec.dm) {

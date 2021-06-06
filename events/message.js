@@ -1,5 +1,6 @@
-const { prefix, default_cooldown, default_deltetime, botdev } = require('../config.json');
+const { prefix, default_cooldown, colors, botdev } = require('../config.json');
 const Discord = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 // change special caracters so that they don't terminate the regex
 const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -64,11 +65,15 @@ module.exports = {
 			if (now < expirationTime) { // epirationTime has not been reached yet
 				const timeLeft = (expirationTime - now) / 1000;
 				if (timeLeft.toFixed(1) == 1.0) {
-					return message.reply(`please wait 1 more second before reusing the \`${command.name}\` command.`)
-						.then(msg => msg.delete({ timeout: default_deltetime }));
+					return embedfile.execute(message, {
+						autodel: true,
+						description: `Please wait 1 more second before reusingthe \`${commandName}\``,
+					}, { template: 'requester' });
 				}
-				return message.reply(`please wait ${timeLeft.toFixed(1)} more seconds before reusing the \`${command.name}\` command.`)
-					.then(msg => msg.delete({ timeout: default_deltetime }));
+				return embedfile.execute(message, {
+					autodel: true,
+					description: `Please wait ${timeLeft.toFixed(1)} more seconds before reusing the \`${commandName}\` command.`,
+				}, { template: 'requester' });
 			}
 		}
 		// not returned yet -> command not used before / expirationTime has passed
@@ -77,12 +82,18 @@ module.exports = {
 
 		// --- DM filter
 		if (command.guildOnly && message.channel.type === 'dm') {
-			return message.reply('This command no work in my DMs :/');
+			return message.channel.send(new MessageEmbed()
+				.setColor(colors.red)
+				.setDescription('This command no work in my DMs :/'),
+			);
 		}
 
 		// --- Botdev filter
 		if (command.botdev && !botdev.includes(message.author.id)) {
-			return message.reply('You not owner!');
+			return message.channel.send(new MessageEmbed()
+				.setColor(colors.red)
+				.setDescription(`\`${commandName}\` is reserved for botdevelopers!`),
+			);
 		}
 
 		// --- Permissions filter
@@ -90,7 +101,10 @@ module.exports = {
 			const authorPerms = message.channel.permissionsFor(message.author);
 			const permissionsText = command.permissions.toLowerCase().replace('_', ' ');
 			if (!authorPerms || !authorPerms.has(command.permissions)) {
-				return message.reply(`To be able to execute this command you need \`${permissionsText}\` permissions!`);
+				return message.channel.send(new MessageEmbed()
+					.setColor(colors.red)
+					.setDescription(`To be able to execute this command you need \`${permissionsText}\` permissions!`),
+				);
 			}
 		}
 
@@ -102,7 +116,10 @@ module.exports = {
 				reply += `\nUse the command like this: \`${prefix}${command.name} ${command.usage}\``;
 			}
 
-			return message.channel.send(reply);
+			return message.channel.send(new MessageEmbed()
+				.setColor(colors.red)
+				.setDescription(reply),
+			);
 		}
 
 
@@ -119,7 +136,12 @@ module.exports = {
 		catch (error) {
 			// error detection
 			console.error(error);
-			message.reply('an error occured. Plz report this to the developer.');
+			message.channel.send(new MessageEmbed()
+				.setColor(colors.red)
+				.setDescription('An error occured. Plz report this to the developer.\n\n```diff\n- ' + error.message + '\n```')
+				.setFooter('Metzok#6146'),
+			)
+				.catch(console.error);
 		}
 	},
 };
