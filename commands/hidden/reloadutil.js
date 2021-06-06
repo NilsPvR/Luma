@@ -6,6 +6,7 @@ module.exports = {
 	name: 'reloadutil',
 	aliases: ['ru', 'reloadu', 'rutil'],
 	description: 'Reload utility files',
+	botdev: true,
 	usage: '<util name>',
 	template: 'simple',
 	execute(message, args) {

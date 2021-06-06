@@ -4,6 +4,7 @@ module.exports = {
 	description: 'Delete messages',
 	guildOnly: true,
 	args: true,
+	usage: '<amount>',
 	template: 'simple',
 	execute(message, args, ec, commandName) {
 		const amount = parseInt(args[0]);

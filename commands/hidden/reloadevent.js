@@ -4,6 +4,7 @@ module.exports = {
 	name: 'reloadevent',
 	aliases: ['re', 'reloade', 'revent'],
 	description: 'Reload event handlers',
+	botdev: true,
 	usage: '<event name>',
 	template: 'simple',
 	execute(message, args) {

@@ -3,6 +3,7 @@ module.exports = {
 	name: 'reloadall',
 	aliases: ['ra', 'reloada', 'rall'],
 	description: 'This command will call all other reload commands. Basically reloading every module.',
+	botdev: true,
 	template: 'simple',
 	execute(message, args) {
 		const reloadFiles = [ 'reloadutil', 'reload', 'reloadevent' ];

@@ -23,6 +23,7 @@ module.exports = {
 	name: 'reload',
 	aliases: ['r'],
 	description: 'Reload a specific or all command(s)',
+	botdev: true,
 	usage: '<command name>',
 	template: 'simple',
 	execute(message, args) {
