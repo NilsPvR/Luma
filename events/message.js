@@ -21,18 +21,23 @@ module.exports = {
 			usage: string
 			template: string for an embed template, this allows to not have to set every embed part per command, only necessary contents are parsed
 				The command should return an object containing:
-					TBD .... !
+					at least a description
+					other fields and values can be added
 				Options:
 					simple: only a description
+					requester: extends simple but also shows who performed the command at which time
 		*/
 		// --- Command handler
 
 		const prefixRegex = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex(prefix)})\\s*`); // bot tagged or prefix
-		if (!prefixRegex.test(message.content) || message.author.bot) return;
+		if (message.author.bot) return; // don't read bot messages
 
-		const [, matchedPrefix] = message.content.match(prefixRegex); // get used prefix
+		if(!prefixRegex.test(message.content) && message.channel.type !== 'dm') return; // no prefix in a non dm
 
-		const args = message.content.slice(matchedPrefix.length).trim().split(/ +/);
+		const [, matchedPrefix] = prefixRegex.test(message.content) ? message.content.match(prefixRegex) : ''; // get used prefix, if none empty string
+		const messageWOprefix = prefixRegex.test(message.content) ? message.content.slice(matchedPrefix.length) : message.content; // remove prefix if one is used
+
+		const args = messageWOprefix.trim().split(/ +/);
 		const commandName = args.shift().toLowerCase(); // the command which user has entered
 
 		const command = client.commands.get(commandName)
@@ -104,6 +109,10 @@ module.exports = {
 		try {
 			// get the command, call execute method with arguments
 			const ec = command.execute(message, args, matchedPrefix, commandName); // embedContent
+
+			// if the command is executed in dm with prefix tell the use it is not necessary
+			if(prefixRegex.test(message.content) && message.channel.type == 'dm') ec.dm = true;
+
 			// evalute templates and flags -> then manipulate the embed objet and send it
 			embedfile.execute(message, ec, command);
 		}

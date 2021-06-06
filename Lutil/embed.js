@@ -53,6 +53,12 @@ module.exports = {
 							msg.delete({ timeout: ec.autodel * 1000 })
 								.catch(console.error);
 						}
+						if (ec.dm) {
+							message.channel.send({ embed: {
+								color: colors.red,
+								description: 'You don\'t have to use a prefix here. I alredy know that you are talking to me. :wave_tone3:',
+							} });
+						}
 					});
 			}
 			else {
@@ -62,8 +68,16 @@ module.exports = {
 							msg.delete({ timeout: ec.autodel * 1000 })
 								.catch(console.error);
 						}
+						if (ec.dm) {
+							message.channel.send({ embed: {
+								color: colors.red,
+								description: 'You don\'t have to use a prefix here. I alredy know that you are talking to me. :wave_tone3:',
+							} });
+						}
 					});
 			}
+
+
 		}
 	},
 };
