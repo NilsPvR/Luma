@@ -125,13 +125,15 @@ module.exports = {
 
 		try {
 			// get the command, call execute method with arguments
-			const ec = command.execute(message, args, matchedPrefix, commandName); // embedContent
+			// <!-- This works for the avatar command but now every command needs to be async -- !>
+			command.execute(message, args, matchedPrefix, commandName).then(ec => { // embedContent
 
-			// if the command is executed in dm with prefix tell the use it is not necessary
-			if(prefixRegex.test(message.content) && message.channel.type == 'dm') ec.dm = true;
+				// if the command is executed in dm with prefix tell the use it is not necessary
+				if(prefixRegex.test(message.content) && message.channel.type == 'dm') ec.dm = true;
 
-			// evalute templates and flags -> then manipulate the embed objet and send it
-			embedfile.execute(message, ec, command);
+				// evalute templates and flags -> then manipulate the embed objet and send it
+				embedfile.execute(message, ec, command);
+			});
 		}
 		catch (error) {
 			// error detection

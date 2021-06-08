@@ -1,12 +1,15 @@
+const { getUser, getMember } = require('../../Lutil/mention');
 module.exports = {
 	name: 'avatar',
 	aliases: ['av', 'profilepicture', 'pfp'],
 	description: 'Show the avatar of the specified user or your own',
 	usage: '<user>',
 	template: 'simple',
-	execute(message) {
-		if (!message.mentions.users.size) {
+	async execute(message, args) {
+		// promise returns the userobject
+		const user = await getUser(message, args[0]);
 
+		if (!user) { // no user provided
 			if (message.channel.type === 'dm') {
 				return { image: { url: message.author.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }) } };
 			}
@@ -27,21 +30,23 @@ module.exports = {
 			};
 		}
 
-		const mentioned = message.mentions.users.first();
-		const member = message.guild.member(mentioned);
-		const footerText = member.nickname ? (mentioned.tag + ' - ') : ''; // if nickname -> show tag, else none
+		// promise returns the memberobject
+		const member = await getMember(message, args[0]);
+
+		const footerText = member.nickname ? (user.tag + ' - ') : ''; // if nickname -> show tag, else none
 
 		return {
-			title: member.nickname ?? mentioned.tag,
-			url: mentioned.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }),
+			title: member.nickname ?? user.tag,
+			url: user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }),
 
 			image: {
-				url: mentioned.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }),
+				url: user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }),
 			},
 
 			footer: {
-				text: footerText + message.author.id,
+				text: footerText + user.id,
 			},
 		};
+
 	},
 };
