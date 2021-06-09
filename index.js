@@ -9,6 +9,9 @@ const client = new Discord.Client({
 	presence: {
 		activity: { name: `${prefix}help | ${prefix}info`, type: 'LISTENING' },
 	},
+	ws: {
+		intent: ['GUILD_MEMBERS'],
+	},
 });
 client.commands = new Discord.Collection();
 client.cooldowns = new Discord.Collection(); // key = command_name, value = Collection(key = user_id, value = last time used cmd by this user)

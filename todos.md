@@ -2,6 +2,8 @@
 - Support non mention user arguments
 	-> avatar in dm
 - Missing permissions detection for kick and prune (async / await ??)
+- If usage contains 'user or member' then say that users/members can be called by name, tag, nicknam, id -> users outside of the guild might not be found without the id
+- fix mention / avatar in dm, since guild is not defined
 
 - When a category is called show info about the category (transfer collection in help to index)
 - When a cmd is called without required arguments -> show info about the cmd
