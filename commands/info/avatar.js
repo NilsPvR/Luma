@@ -1,5 +1,20 @@
 const { getUser, getMember } = require('../../Lutil/mention');
 const { getID } = require('../../external-links.json').discord;
+
+const userBasedAv = (user) => {
+	return {
+		title: user.tag,
+		url: user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }),
+
+		image: {
+			url:  user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }),
+		},
+
+		footer: {
+			text: user.id,
+		},
+	};
+};
 module.exports = {
 	name: 'avatar',
 	aliases: ['av', 'profilepicture', 'pfp'],
@@ -8,7 +23,7 @@ module.exports = {
 	template: 'simple',
 	async execute(message, args) {
 		if (!args[0]) { // no user provided
-			if (message.channel.type === 'dm') { // Just show the image cuz there is no point in telling who'm avatar that is
+			if (message.channel.type === 'dm') { // Just show the image cuz there is no point in telling whoms avatar that is + no guild
 				return { image: { url: message.author.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }) } };
 			}
 
@@ -35,8 +50,7 @@ module.exports = {
 		// promise returns the memberobject
 		const member = await getMember(message, args[0]);
 
-
-		if (!user && !member) { // nothing found
+		if ((!user && !member) || (!user && message.channel.type === 'dm')) { // nothing found
 			return {
 				flag: 'error',
 				description: `Unable to find someone with the ID or name: ${args[0]}`,
@@ -49,19 +63,11 @@ module.exports = {
 				],
 			};
 		}
+		else if (message.channel.type === 'dm') { // in dm no guild available
+			return userBasedAv(user, args);
+		}
 		else if (user && !member) { // user found but no member -> simple information
-			return {
-				title: user.tag,
-				url: user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }),
-
-				image: {
-					url:  user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }),
-				},
-
-				footer: {
-					text: user.id,
-				},
-			};
+			return userBasedAv(user, args);
 		}
 		// no user but member or both are found
 

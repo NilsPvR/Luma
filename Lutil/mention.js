@@ -11,6 +11,7 @@
 module.exports = {
 	async getUser(message, arg) {
 		if (!arg) return;
+
 		// get the id from mention or just plain id
 		const idMatches = arg.match(/^(?:<@!?)?(\d{18})(?:>)?$/);
 
@@ -31,6 +32,7 @@ module.exports = {
 
 	async getMember(message, arg) {
 		if (!arg) return;
+		if (message.channel.type === 'dm') return;
 		// get the id from mention or just plain id
 		const idMatches = arg.match(/^(?:<@!?)?(\d{18})(?:>)?$/);
 
