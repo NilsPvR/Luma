@@ -46,6 +46,7 @@ module.exports = {
 				console.log('Whoops an invalid template has been defined');
 			}
 
+			if (!ec.description) return;
 			if (command.attachment) {
 				message.channel.send({ files: [command.attachment], embed: ec })
 					.then(msg => {
