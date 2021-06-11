@@ -1,4 +1,5 @@
 const { getUser, getMember } = require('../../Lutil/mention');
+const { confirm } = require('../../Lutil/confirmperson');
 const { getID } = require('../../external-links.json').discord;
 
 const userBasedAv = (user) => {
@@ -43,52 +44,66 @@ module.exports = {
 			};
 		}
 
-		/* bothe methods are used since a user could get found by the id even if a member could not get found (cuz they are not in the guild)
+		/* both methods are used since a user could get found by the id even if a member could not get found (cuz they are not in the guild)
 			the getMember can find someone by their nickname, which the getUser can't */
 		// promise returns the userobject
-		let user = await getUser(message, args[0]);
+		let user = await getUser(message, args[0], true);
 		// promise returns the memberobject
 		const member = await getMember(message, args[0]);
 
-		if ((!user && !member) || (!user && message.channel.type === 'dm')) { // nothing found
-			return {
-				flag: 'error',
-				description: `Unable to find someone with the ID or name: ${args[0]}`,
+		try {
+			const confirmed = await confirm(message, args[0], user, member);
 
-				fields: [
-					{
-						name: '\u200b',
-						value: `Try using their [ID](${getID})`,
+			if (confirmed) {
+				if ((!user && !member) || (!user && message.channel.type === 'dm')) { // nothing found
+					return {
+						flag: 'error',
+						description: `Unable to find someone with the ID or name: ${args[0]}`,
+
+						fields: [
+							{
+								name: '\u200b',
+								value: `Try using their [ID](${getID})`,
+							},
+						],
+					};
+				}
+
+				else if (message.channel.type === 'dm') { // in dm no guild available
+					return userBasedAv(user, args);
+				}
+
+				else if (user && !member) { // user found but no member -> simple information
+					return userBasedAv(user, args);
+				}
+
+				// no user but member | or both are found
+
+				/* even if the user has been found get it from the member
+					-> in rare instances the getUser() could only find someone case insensitive but the getMember() would be able to find a nickname case sensitive
+						-> leading into finding different people */
+				user = member.user;
+				const footerText = member.nickname ? (user.tag + ' - ') : ''; // if nickname -> show tag, else none
+
+				return {
+					title: member.nickname ?? user.tag,
+					url: user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }),
+
+					image: {
+						url: user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }),
 					},
-				],
-			};
+
+					footer: {
+						text: footerText + user.id,
+					},
+				};
+			}
 		}
-		else if (message.channel.type === 'dm') { // in dm no guild available
-			return userBasedAv(user, args);
+		catch (error) {
+			message.channel.send('timeout');
+			console.log(error);
 		}
-		else if (user && !member) { // user found but no member -> simple information
-			return userBasedAv(user, args);
-		}
-		// no user but member or both are found
 
-		/* even if the user has been found get it from the member
-			-> in rare instances the getUser() could only find someone case insensitive but the getMember() would be able to find a nickname case sensitive
-				-> leading into finding different people */
-		user = member.user;
-		const footerText = member.nickname ? (user.tag + ' - ') : ''; // if nickname -> show tag, else none
-
-		return {
-			title: member.nickname ?? user.tag,
-			url: user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }),
-
-			image: {
-				url: user.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }),
-			},
-
-			footer: {
-				text: footerText + user.id,
-			},
-		};
 
 	},
 };

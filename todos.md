@@ -3,6 +3,13 @@
 	-> avatar in dm
 - Missing permissions detection for kick and prune (async / await ??)
 - If usage contains 'user or member' then say that users/members can be called by name, tag, nicknam, id -> users outside of the guild might not be found without the id
+- Make it possible to skip the user/member input confirmation by adding an argument
+- Don't say: try using their id in confirmation error embed when they already used a id, also remove "or name"
+- fix names with spaces for av cmd
+- accept actual 'y' and 'n' with parenthese in confirmation
+- try using message collector instead of await to allow sending random messages before confirming
+- av / confirm if member and user are different, could the confirmation ask for someone else then actually executed?
+
 
 
 - When a category is called show info about the category (transfer collection in help to index)
@@ -15,6 +22,7 @@
 - Get a database rolling -> mongodb atlas
 	-> save guild prefix
 	-> save user if they want to be notified about not having to use the prefix in dm
+	-> allow members to disable the user/member input confirmation -> for kick cmd e.g.
 - EMBEDS everywhere-> mainly help all and error responses in message.js
 - 4 in a row as a discord game with reactions and stuff, against bot or 2players
 Hypixel bw command -> probably wait for djsV13 and make a new bot for that

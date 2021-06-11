@@ -1,7 +1,7 @@
 /*
 	These functions will return a member/user object based of the given argument
 
-	bothe methods should be used since a user could get found by the id even if a member could not get found (cuz they are not in the guild)
+	both methods should be used since a user could get found by the id even if a member could not get found (cuz they are not in the guild)
 		-> the getMember can find someone by their nickname, which the getUser can't
 			-> in most cases do smth like: user = getUser() ?? getMember().user
 
@@ -24,10 +24,12 @@ module.exports = {
 			foundUser = foundUser ?? message.client.users.cache.find(user => user.tag.toLowerCase() == arg || user.username.toLowerCase() == arg);
 			return foundUser;
 		}
+		else {
+			// fetch the user, Take the second element since the first is the whole thing
+			return await message.client.users.fetch(idMatches[1])
+				.catch(console.error);
+		}
 
-		// fetch the user, Take the second element since the first is the whole thing
-		return await message.client.users.fetch(idMatches[1])
-			.catch(console.error);
 	},
 
 	async getMember(message, arg) {
@@ -49,9 +51,12 @@ module.exports = {
 				|| mem.user.username.toLowerCase() == arg || mem.nickname?.toLowerCase() == arg);
 			return foundMember;
 		}
-
-		// fetch the member, Take the second element since the first is the whole thing
-		return await message.guild.members.fetch(idMatches[1])
-			.catch(console.error);
+		else {
+			// fetch the member, Take the second element since the first is the whole thing
+			return await message.guild.members.fetch(idMatches[1])
+				.catch((error) => {
+					console.error(`Error initiated in mention.js: ${error.message}`);
+				});
+		}
 	},
 };
