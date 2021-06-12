@@ -8,6 +8,7 @@
 	in rare instances the getUser() could only find someone case insensitive but the getMember() would be able to find a nickname case sensitive
 		-> leading into finding different people. For this case the user should be extracted from the member in the calling module
 */
+const { confirm } = require('../Lutil/confirmperson');
 
 async function fgetUser(message, arg) {
 	if (!arg) return;
@@ -63,28 +64,45 @@ async function fgetMember(message, arg) {
 }
 
 module.exports = {
-	async getUser(message, arg) {
-		return await fgetUser(message, arg);
-	},
-	async getMember(message, arg) {
-		return await fgetMember(message, arg);
+	async getUser(message, arg, shouldConfirm) {
+		const user = await fgetUser(message, arg);
+
+		if (shouldConfirm) { // aks user for confirmation
+			if (await confirm(message, arg, user)) return user; // confirmed
+			return;
+		}
+		return user;
 	},
 
-	async getBoth(message, arg) { // returns an object with a memebr and user object
+	async getMember(message, arg, shouldConfirm) {
+		const member = await fgetMember(message, arg);
+
+		if (shouldConfirm) { // aks user for confirmation
+			if (await confirm(message, arg, null, member)) return member; // confirmed
+			return;
+		}
+		return member;
+	},
+
+	async getBoth(message, arg, shouldConfirm) { // returns an object with a memebr and user object
 		if (!arg) return;
 
 		const both = {};
-		const member = await fgetMember(message, arg);
-		both.member = member;
+		both.member = await fgetMember(message, arg);
 
-		if (!member) {
+
+		if (!both.member) { // no member found check for user
 			const user = await fgetUser(message, arg);
 			both.user = user;
 		}
-		else {
-			both.user = member.user;
+		else { // member found -> just get user from member
+			both.user = both.member.user;
 		}
 
+		if (shouldConfirm) { // ask user for confirmation
+			if (await confirm(message, arg, both.user, both.member)) return both; // confirmed
+			return; // not confirmed
+		}
 		return both;
 	},
 };
