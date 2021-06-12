@@ -4,7 +4,7 @@
 		"getID": "https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-"
 	},
 	"text": {
-		"skipConfirm": "When mentioning someone or using their ID you can add 'y' to skip the confirmation."
+		"skipConfirm": "You can add 'y' behind a user/member to skip the confirmation. This won't work when using the name/nickname."
 	}
 }
 
