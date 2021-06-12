@@ -5,7 +5,7 @@ const embed = require('../Lutil/embed');
 const collectorTime = 10;
 module.exports = {
 	// message where the cmd was execute / the id or name which was used as input / user object or member object to confirm
-	async confirm(message, arg, pUser, member) {
+	async confirm(message, arg, pUser, member, fullConfirm) {
 		const filter = m => m.author.id === message.author.id;
 
 		if (!member && !pUser) { // invalid input
@@ -27,6 +27,7 @@ module.exports = {
 			);
 			return;
 		}
+		else if (!fullConfirm) { return true; } // only confirm if the user/member exists, then return
 
 		const user = pUser ?? member.user;
 		const confirmationMessage = await message.channel.send(new MessageEmbed()

@@ -64,27 +64,23 @@ async function fgetMember(message, arg) {
 }
 
 module.exports = {
-	async getUser(message, arg, shouldConfirm) {
+	async getUser(message, arg, shouldFullConfirm) {
 		const user = await fgetUser(message, arg);
 
-		if (shouldConfirm) { // aks user for confirmation
-			if (await confirm(message, arg, user)) return user; // confirmed
-			return;
-		}
-		return user;
+		// aks user for confirmation if shouldConfirm, otherwise only check if member/user exists
+		if (await confirm(message, arg, user, shouldFullConfirm)) return user; // confirmed
+		return;
 	},
 
-	async getMember(message, arg, shouldConfirm) {
+	async getMember(message, arg, shouldFullConfirm) {
 		const member = await fgetMember(message, arg);
 
-		if (shouldConfirm) { // aks user for confirmation
-			if (await confirm(message, arg, null, member)) return member; // confirmed
-			return;
-		}
-		return member;
+		// aks user for confirmation if shouldConfirm, otherwise only check if member/user exists
+		if (await confirm(message, arg, null, member, shouldFullConfirm)) return member; // confirmed
+		return;
 	},
 
-	async getBoth(message, arg, shouldConfirm) { // returns an object with a memebr and user object
+	async getBoth(message, arg, shouldFullConfirm) { // returns an object with a memebr and user object
 		if (!arg) return;
 
 		const both = {};
@@ -99,10 +95,8 @@ module.exports = {
 			both.user = both.member.user;
 		}
 
-		if (shouldConfirm) { // ask user for confirmation
-			if (await confirm(message, arg, both.user, both.member)) return both; // confirmed
-			return; // not confirmed
-		}
-		return both;
+		// aks user for confirmation if shouldConfirm, otherwise only check if member/user exists
+		if (await confirm(message, arg, both.user, both.member, shouldFullConfirm)) return both; // confirmed
+		return; // not confirmed
 	},
 };
