@@ -4,12 +4,12 @@ Use git issues instead of this??
 - Show subcategories in help all message
 - Missing permissions detection for kick and prune (async / await ??)
 - If usage contains 'user or member' then say that users/members can be called by name, tag, nicknam, id -> users outside of the guild might not be found without the id
-- Make it possible to skip the user/member input confirmation by adding an argument
+
 - Don't say: try using their id in confirmation error embed when they already used a id, also remove "or name"
+- use extraInfo tag in help msg
+
+
 - try using message collector instead of await to allow sending random messages before confirming
-
-
-
 - Reminders like no need for prefix in dm message should not happen every message -> use a collection to store sent messages
 - When a category is called show info about the category (transfer collection in help to index)
 - When a cmd is called without required arguments -> show info about the cmd
@@ -41,3 +41,4 @@ Hypixel bw command -> probably wait for djsV13 and make a new bot for that
 - fix names with spaces for av cmd
 - accept actual 'y' and 'n' with parenthese in confirmation
 - av / confirm if member and user are different, could the confirmation ask for someone else then actually executed?
+- Make it possible to skip the user/member input confirmation by adding an argument

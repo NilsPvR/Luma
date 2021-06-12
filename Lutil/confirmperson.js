@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js');
 const { colors } = require('../config.json');
-const { getID } = require('../external-links.json').discord;
+const { getID } = require('../linksNtext.json').discord;
 const embed = require('../Lutil/embed');
 const collectorTime = 10;
 module.exports = {

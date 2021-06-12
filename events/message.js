@@ -20,6 +20,7 @@ module.exports = {
 			permissions: string
 			args: boolean
 			usage: string
+			extraInfo: string
 			template: string for an embed template, this allows to not have to set every embed part per command, only necessary contents are parsed
 				The command should return an object containing:
 					at least a description

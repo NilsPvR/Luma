@@ -1,4 +1,5 @@
 const { getBoth } = require('../../Lutil/mention');
+const { skipConfirm } = require('../../linksNtext.json').text;
 
 const userBasedAv = (user) => {
 	return {
@@ -19,6 +20,7 @@ module.exports = {
 	aliases: ['av', 'profilepicture', 'pfp'],
 	description: 'Show the avatar of the specified user or your own',
 	usage: '<user>',
+	extraInfo: `${skipConfirm}`,
 	template: 'simple',
 	async execute(message, args) {
 		if (!args[0]) { // no user provided
