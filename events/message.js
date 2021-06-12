@@ -127,7 +127,7 @@ module.exports = {
 			// get the command, call execute method with arguments
 			// <!-- This works for the avatar command but now every command needs to be async -- !>
 			command.execute(message, args, matchedPrefix, commandName).then(ec => { // embedContent
-				ec = ec ?? {};
+				if(!ec) return;
 				// if the command is executed in dm with prefix tell the use it is not necessary
 				if(prefixRegex.test(message.content) && message.channel.type == 'dm') ec.dm = true;
 

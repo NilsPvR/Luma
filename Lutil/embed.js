@@ -46,9 +46,9 @@ module.exports = {
 				console.log('Whoops an invalid template has been defined');
 			}
 
-			if (!ec.description) return;
 			if (command.attachment) {
 				message.channel.send({ files: [command.attachment], embed: ec })
+					.catch(console.error)
 					.then(msg => {
 						if (ec.autodel) {
 							msg.delete({ timeout: ec.autodel === true ? default_deltetime * 1000 : ec.autodel * 1000 })
@@ -64,6 +64,7 @@ module.exports = {
 			}
 			else {
 				message.channel.send({ embed: ec })
+					.catch(console.error)
 					.then(msg => {
 						if (ec.autodel) {
 							msg.delete({ timeout: ec.autodel === true ? default_deltetime * 1000 : ec.autodel * 1000 })
