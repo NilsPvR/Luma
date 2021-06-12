@@ -10,9 +10,9 @@
 */
 const { confirm } = require('../Lutil/confirmperson');
 // only allow id's or mentions with y/yes at the end| (id)(y)
-const idregex = new RegExp(/^(?:<@!?)?(\d{18})(?:>)? ?(y|yes)?$/i);
+const idregex = new RegExp(/^(?:<@!?)?(\d{18})>? ?['"]?(y|yes)?['"]?$/i);
 // only allow discord tags | (tag)(y)
-const tagregex = new RegExp(/(^.+#\d{4}) ?(y|yes)$/i);
+const tagregex = new RegExp(/(^.+#\d{4}) ?['"]?(y|yes)['"]?$/i);
 
 async function fgetUser(message, arg) {
 	// get the id from mention or just plain id, check for 'y' at the end
