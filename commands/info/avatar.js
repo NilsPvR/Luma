@@ -1,4 +1,4 @@
-const { getUser, getMember } = require('../../Lutil/mention');
+const { getBoth } = require('../../Lutil/mention');
 const { confirm } = require('../../Lutil/confirmperson');
 const { getID } = require('../../external-links.json').discord;
 
@@ -47,10 +47,11 @@ module.exports = {
 		/* both methods are used since a user could get found by the id even if a member could not get found (cuz they are not in the guild)
 			the getMember can find someone by their nickname, which the getUser can't */
 		// promise returns the userobject
-		console.log(args.join(' '));
-		let user = await getUser(message, args.join(' '), true);
-		// promise returns the memberobject
-		const member = await getMember(message, args.join(' '));
+
+		// promise returns an object with user and member
+		const both = await getBoth(message, args.join(' '));
+		const user = both.user;
+		const member = both.member;
 
 		try {
 			const confirmed = await confirm(message, args.join(' '), user, member);
@@ -83,7 +84,6 @@ module.exports = {
 				/* even if the user has been found get it from the member
 					-> in rare instances the getUser() could only find someone case insensitive but the getMember() would be able to find a nickname case sensitive
 						-> leading into finding different people */
-				user = member.user;
 				const footerText = member.nickname ? (user.tag + ' - ') : ''; // if nickname -> show tag, else none
 
 				return {

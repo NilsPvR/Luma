@@ -50,10 +50,10 @@ module.exports = {
 			confirmationMessage.delete();
 			if (foundMsg.deletable) foundMsg.delete();
 
-			if (fcontent == 'yes' || fcontent == 'y') {
+			if (fcontent == 'yes' || fcontent == 'y' || fcontent == '\'yes\'' || fcontent == '\'y\'') {
 				return true;
 			}
-			else if (fcontent == 'no' || fcontent == 'n') {
+			else if (fcontent == 'no' || fcontent == 'n' || fcontent == '\'no\'' || fcontent == '\'n\'') {
 				message.channel.send(new MessageEmbed()
 					.setColor(colors.red)
 					.setDescription('Operation cancelled'),
