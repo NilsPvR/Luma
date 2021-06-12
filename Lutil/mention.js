@@ -27,7 +27,9 @@ module.exports = {
 		else {
 			// fetch the user, Take the second element since the first is the whole thing
 			return await message.client.users.fetch(idMatches[1])
-				.catch(console.error);
+				.catch((error) => {
+					console.error(`Error initiated in mention.js: ${error.message}`);
+				});
 		}
 
 	},

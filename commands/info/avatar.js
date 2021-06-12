@@ -47,12 +47,13 @@ module.exports = {
 		/* both methods are used since a user could get found by the id even if a member could not get found (cuz they are not in the guild)
 			the getMember can find someone by their nickname, which the getUser can't */
 		// promise returns the userobject
-		let user = await getUser(message, args[0], true);
+		console.log(args.join(' '));
+		let user = await getUser(message, args.join(' '), true);
 		// promise returns the memberobject
-		const member = await getMember(message, args[0]);
+		const member = await getMember(message, args.join(' '));
 
 		try {
-			const confirmed = await confirm(message, args[0], user, member);
+			const confirmed = await confirm(message, args.join(' '), user, member);
 
 			if (confirmed) {
 				if ((!user && !member) || (!user && message.channel.type === 'dm')) { // nothing found
@@ -100,10 +101,7 @@ module.exports = {
 			}
 		}
 		catch (error) {
-			message.channel.send('timeout');
 			console.log(error);
 		}
-
-
 	},
 };
