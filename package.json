@@ -8,10 +8,13 @@
     "url": "https://github.com/NilsPvR/Luma"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "author": "Nils",
   "license": "GPL-3.0-only",
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "dependencies": {
     "discord.js": "^12.5.3",
     "dotenv": "^9.0.2"
