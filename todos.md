@@ -1,6 +1,7 @@
 Use git issues instead of this??
 
-
+- edit conifrmation messages instead of resending
+- change the message and layout of canceling input confirmation
 - Show subcategories in help all message
 - Missing permissions detection for kick and prune (async / await ??)
 - If usage contains 'user or member' then say that users/members can be called by name, tag, nicknam, id -> users outside of the guild might not be found without the id

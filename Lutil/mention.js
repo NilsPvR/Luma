@@ -126,8 +126,7 @@ module.exports = {
 		const returnObjMem = await fgetMember(message, arg);
 		let returnObjUs;
 		const tagMatches = arg.match(tagregex);
-
-		both.member = returnObjMem.member;
+		both.member = returnObjMem?.member;
 
 		if (!both.member) { // no member found check for user
 			returnObjUs = await fgetUser(message, arg);
@@ -138,7 +137,7 @@ module.exports = {
 		}
 
 
-		if (returnObjMem.skipConfirm || returnObjUs?.skipConfirm) shouldFullConfirm = false;
+		if (returnObjMem?.skipConfirm || returnObjUs?.skipConfirm) shouldFullConfirm = false;
 		arg = tagMatches?.[1] ?? arg; // if they used Metzok#6146yes -> then only tag
 
 		// aks user for confirmation if shouldConfirm, otherwise only check if member/user exists
