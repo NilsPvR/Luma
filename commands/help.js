@@ -7,7 +7,7 @@ module.exports = {
 	description: 'I\'ll help you',
 	usage: '[command name]',
 	template: 'simple',
-	execute(message, args, matchedPrefix, commandName) {
+	async execute(message, args, matchedPrefix, commandName) {
 		const data = [];
 		const fields = [];
 		const { commands } = message.client; // all commands

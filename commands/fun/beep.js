@@ -5,7 +5,7 @@ module.exports = {
 	name: 'beep',
 	description: 'Boop',
 	template: 'simple',
-	execute() {
+	async execute() {
 		return {
 			flag: 'error',
 			description: '**Boop.**',

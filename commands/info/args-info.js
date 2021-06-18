@@ -4,7 +4,7 @@ module.exports = {
 	guildOnly: true,
 	args: true,
 	template: 'simple',
-	execute(message, args, matchedPrefix, commandName) {
+	async execute(message, args, matchedPrefix, commandName) {
 		return {
 			title: commandName,
 			description: `Arguments: \`${args.join('` | `')}\`\n`,

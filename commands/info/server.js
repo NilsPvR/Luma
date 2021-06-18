@@ -4,7 +4,7 @@ module.exports = {
 	description: 'Detailed information about the server',
 	guildOnly: true,
 	template: 'simple',
-	execute(message) {
+	async execute(message) {
 		return {
 			title: message.guild.name,
 

@@ -6,7 +6,7 @@ module.exports = {
 	args: true,
 	usage: '<amount>',
 	template: 'simple',
-	execute(message, args, ec, commandName) {
+	async execute(message, args, ec, commandName) {
 		const amount = parseInt(args[0]);
 		if (isNaN(amount)) {
 			return {

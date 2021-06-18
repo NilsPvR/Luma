@@ -1,7 +1,7 @@
 module.exports = {
 	name: 'embed',
 	template: 'requester',
-	execute() {
+	async execute() {
 		return {
 			flag: 'error',
 			title: 'Nice title',

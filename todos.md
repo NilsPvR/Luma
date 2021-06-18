@@ -10,7 +10,7 @@ Use git issues instead of this??
 
 - Don't say: try using their id in confirmation error embed when they already used a id, also remove "or name"
 - use extraInfo tag in help msg
-
+- make a util for sending a error message when an unexpected error occurs -> so it can be used in lower lvl. files
 - help message: show somewhere that <is required> and [is optional]
 - try using message collector instead of await to allow sending random messages before confirming
 - Reminders like no need for prefix in dm message should not happen every message -> use a collection to store sent messages

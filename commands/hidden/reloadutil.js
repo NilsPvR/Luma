@@ -9,7 +9,7 @@ module.exports = {
 	botdev: true,
 	usage: '<util name>',
 	template: 'simple',
-	execute(message, args) {
+	async execute(message, args) {
 		if (!args.length) { // reload all commands
 			let uSuccess = 0; // amount successful reloads
 			let uFail = 0; // amount unsuccesful reloads

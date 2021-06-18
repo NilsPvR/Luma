@@ -5,7 +5,7 @@ module.exports = {
 	name: 'ping',
 	description: 'Vital information about me',
 	cooldown: 10,
-	execute(message) {
+	async execute(message) {
 		const messageEmbed = new MessageEmbed()
 			.setDescription(`Websocket heartbeat: ${message.client.ws.ping}ms.\nPinging...`);
 

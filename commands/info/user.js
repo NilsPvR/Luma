@@ -3,7 +3,7 @@ module.exports = {
 	description: 'Detailed information about a user',
 	usage: '<user>',
 	template: 'simple',
-	execute(message) {
+	async execute(message) {
 		return {
 			title: message.author.username,
 			description: `Your ID: ${message.author.id}`,

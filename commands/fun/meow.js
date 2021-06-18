@@ -12,7 +12,7 @@ module.exports = {
 	permissions: 'ADMINISTRATOR',
 	botdev: true,
 	template: 'simple',
-	execute(message, args, matchedPrefix, commandName) {
+	async execute(message, args, matchedPrefix, commandName) {
 		if (commandName === 'meow') {
 			if (!args.length) {
 				if (!running) { // don't start multiple loops
