@@ -11,7 +11,7 @@
 const { confirm } = require('../Lutil/confirmperson');
 // only allow id's or mentions with y/yes at the end| (id)(y)
 const idregex = new RegExp(/^(?:<@!?)?(\d{18})>? ?['"]?(y|yes)?['"]?$/i);
-// only allow discord tags | (tag)(y)
+// only allow discord tags with y/yes at the end | (tag)(y)
 const tagregex = new RegExp(/(^.+#\d{4}) ?['"]?(y|yes)['"]?$/i);
 
 async function fgetUser(message, arg) {
@@ -60,11 +60,11 @@ async function fgetMember(message, arg) {
 		// fetch all guild members instead of relying on cache
 		const members = await message.guild.members.fetch();
 
-		// if any of tag,name,nicknam macthes then return the member
+		// if any of tag,name,nicknam matches then return the member
 		let foundMember = members.find(mem => mem.user.tag == arg || mem.user.username == arg || mem.nickname == arg
 			|| mem.user.tag == tagMatches?.[1]); // if they use Metzok#6146yes -> get the tag like this
 
-		// if nothing has been found try seacrhing case insensitive
+		// if nothing has been found try searching case insensitive
 		arg = arg.toLowerCase();
 		foundMember = foundMember ?? members.find(mem => mem.user.tag.toLowerCase() == arg
 			|| mem.user.username.toLowerCase() == arg || mem.nickname?.toLowerCase() == arg
@@ -94,10 +94,12 @@ module.exports = {
 	async getUser(message, arg, shouldFullConfirm) {
 		if (!arg) return;
 		const returnObj = await fgetUser(message, arg);
+		const idMatches = arg.match(idregex);
 		const tagMatches = arg.match(tagregex);
 
 		// just test if not empty, no need to compare with 'y'
 		if (returnObj.skipConfirm) shouldFullConfirm = false;
+		arg = idMatches?.[1] ?? arg; // if they used IDy -> then only ID
 		arg = tagMatches?.[1] ?? arg; // if they used Metzok#6146yes -> then only tag
 
 		// aks user for confirmation if shouldConfirm, otherwise only check if member/user exists
@@ -108,10 +110,12 @@ module.exports = {
 	async getMember(message, arg, shouldFullConfirm) {
 		if (!arg) return;
 		const returnObj = await fgetMember(message, arg);
+		const idMatches = arg.match(idregex);
 		const tagMatches = arg.match(tagregex);
 
 		// just test if not empty, no need to compare with 'y'
 		if (returnObj.skipConfirm) shouldFullConfirm = false;
+		arg = idMatches?.[1] ?? arg; // if they used IDy -> then only ID
 		arg = tagMatches?.[1] ?? arg; // if they used Metzok#6146yes -> then only tag
 
 		// aks user for confirmation if shouldConfirm, otherwise only check if member/user exists
@@ -125,6 +129,7 @@ module.exports = {
 		const both = {};
 		const returnObjMem = await fgetMember(message, arg);
 		let returnObjUs;
+		const idMatches = arg.match(idregex);
 		const tagMatches = arg.match(tagregex);
 		both.member = returnObjMem?.member;
 
@@ -138,6 +143,7 @@ module.exports = {
 
 
 		if (returnObjMem?.skipConfirm || returnObjUs?.skipConfirm) shouldFullConfirm = false;
+		arg = idMatches?.[1] ?? arg; // if they used IDy -> then only ID
 		arg = tagMatches?.[1] ?? arg; // if they used Metzok#6146yes -> then only tag
 
 		// aks user for confirmation if shouldConfirm, otherwise only check if member/user exists
