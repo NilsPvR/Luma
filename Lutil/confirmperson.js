@@ -3,26 +3,39 @@ const { colors } = require('../config.json');
 const { getID } = require('../linksNtext.json').discord;
 const embed = require('../Lutil/embed');
 const collectorTime = 10;
+
+// these are the same as in mention.js
+// only allow id's or mentions| (id)
+const idregex = new RegExp(/^(?:<@!?)?(\d{18})>?$/i);
+// only allow discord tags | (tag)
+const tagregex = new RegExp(/^(.+#\d{4})$/i);
+
 module.exports = {
 	// message where the cmd was execute / the id or name which was used as input / user object or member object to confirm
 	async confirm(message, arg, pUser, member, fullConfirm) {
 		const filter = m => m.author.id === message.author.id;
 
+		let inputType;
+		let invalidInputFields;
+
+		if (idregex.test(arg)) inputType = 'ID'; // they used an ID
+		else if (tagregex.test(arg)) inputType = 'tag'; // they used a tag
+		else inputType = 'name';
+
+
+		if (idregex.test(arg)) invalidInputFields = [];	// they already used an id so don't tell them to use an id
+		else invalidInputFields = [{ name: '\u200b', value: `Try using their [ID](${getID})` }]; // didn't use an id
+
 		if (!member && !pUser) { // invalid input
 			embed.execute(message,
 				{ // embed object
 					flag: 'error',
-					description: `Unable to find someone with the ID or name: ${arg}`,
+					description: `Unable to find someone with the ${inputType}: ${arg}`,
 
-					fields: [
-						{
-							name: '\u200b',
-							value: `Try using their [ID](${getID})`,
-						},
-					],
+					fields: invalidInputFields,
 				},
 				{ // command object
-					template: 'simple',
+					template: 'requester',
 				},
 			);
 			return;
@@ -51,10 +64,12 @@ module.exports = {
 			confirmationMessage.delete();
 			if (foundMsg.deletable) foundMsg.delete();
 
-			if (fcontent == 'yes' || fcontent == 'y' || fcontent == '\'yes\'' || fcontent == '\'y\'') {
+			if (fcontent == 'yes' || fcontent == 'y' || fcontent == '\'yes\'' || fcontent == '\'y\''
+				|| fcontent == '"y"' || fcontent == '"yes') {
 				return true;
 			}
-			else if (fcontent == 'no' || fcontent == 'n' || fcontent == '\'no\'' || fcontent == '\'n\'') {
+			else if (fcontent == 'no' || fcontent == 'n' || fcontent == '\'no\'' || fcontent == '\'n\''
+				|| fcontent == '"no"' || fcontent == '"n"') {
 				message.channel.send(new MessageEmbed()
 					.setColor(colors.red)
 					.setDescription('Operation cancelled'),
@@ -69,7 +84,7 @@ module.exports = {
 						description: `\`${fcontent}\` is not a valid response.`,
 					},
 					{
-						template: 'simple',
+						template: 'requester',
 					},
 				);
 				return;

@@ -1,15 +1,17 @@
 Use git issues instead of this??
 
+- fix being able to get a cooldown message of 'wait 0.0seconds'
 - edit conifrmation messages instead of resending
-- change the message and layout of canceling input confirmation
+- change the message and layout of canceling input confirmation, also when placed a wrong input
 - Show subcategories in help all message
 - Missing permissions detection for kick and prune (async / await ??)
-- If usage contains 'user or member' then say that users/members can be called by name, tag, nicknam, id -> users outside of the guild might not be found without the id
+- Help message: If usage contains 'user or member' then say that users/members can be called by name, tag, nicknam, id -> users outside of the guild might not be found without the id
+	-> confirmation can be skipped by using 'y' at the end
 
 - Don't say: try using their id in confirmation error embed when they already used a id, also remove "or name"
 - use extraInfo tag in help msg
 
-
+- help message: show somewhere that <is required> and [is optional]
 - try using message collector instead of await to allow sending random messages before confirming
 - Reminders like no need for prefix in dm message should not happen every message -> use a collection to store sent messages
 - When a category is called show info about the category (transfer collection in help to index)
@@ -25,7 +27,8 @@ Use git issues instead of this??
 	-> allow members to disable the user/member input confirmation -> for kick cmd e.g.
 - EMBEDS everywhere-> mainly help all and error responses in message.js
 - 4 in a row as a discord game with reactions and stuff, against bot or 2players
-Hypixel bw command -> probably wait for djsV13 and make a new bot for that
+ -> probably wait for djsV13 and make a new bot for that
+- Hypixel bw command
 
 
 
@@ -43,3 +46,4 @@ Hypixel bw command -> probably wait for djsV13 and make a new bot for that
 - accept actual 'y' and 'n' with parenthese in confirmation
 - av / confirm if member and user are different, could the confirmation ask for someone else then actually executed?
 - Make it possible to skip the user/member input confirmation by adding an argument
+- Don't say: try using their id in confirmation error embed when they already used a id, also remove "or name"
