@@ -49,7 +49,8 @@ module.exports = {
 		// promise returns the userobject
 
 		// promise returns an object with user and member, if user confirmed input
-		const both = await getBoth(message, args.join(' '));
+		const both = await getBoth(message, args.join(' '))
+			.catch(console.error);
 		if (!both) return; // no user found or input not confirmed
 		const user = both.user;
 		const member = both.member;
