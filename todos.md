@@ -7,10 +7,14 @@ Use git issues instead of this??
 - Missing permissions detection for kick and prune (async / await ??)
 - Help message: If usage contains 'user or member' then say that users/members can be called by name, tag, nicknam, id -> users outside of the guild might not be found without the id
 	-> confirmation can be skipped by using 'y' at the end
+- in mention.js if the regex finds a tag with more then 32chars, containing @ or : or ``` then the user put #1111 (a discriminator) in the reason which breaks
+	-> tell the user to not use discriminators in reasons
+	-> we will ingore the case that they mistyped the name in such a form
 
-- Don't say: try using their id in confirmation error embed when they already used a id, also remove "or name"
+
 - use extraInfo tag in help msg
 - make a util for sending a error message when an unexpected error occurs -> so it can be used in lower lvl. files
+- help command for 'input' (see below), 'time' (time inputs: 2h 30min)
 - help message: show somewhere that <is required> and [is optional]
 - try using message collector instead of await to allow sending random messages before confirming
 - Reminders like no need for prefix in dm message should not happen every message -> use a collection to store sent messages
@@ -25,6 +29,7 @@ Use git issues instead of this??
 	-> save guild prefix
 	-> save user if they want to be notified about not having to use the prefix in dm
 	-> allow members to disable the user/member input confirmation -> for kick cmd e.g.
+	-> when a user uses the skip confirmation y/yes behind id/tag for the first time tell them that it works that way and still ask for confirmation
 - EMBEDS everywhere-> mainly help all and error responses in message.js
 - 4 in a row as a discord game with reactions and stuff, against bot or 2players
  -> probably wait for djsV13 and make a new bot for that
