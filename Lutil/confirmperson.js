@@ -16,23 +16,23 @@ module.exports = {
 		const filter = m => m.author.id === message.author.id;
 
 		let inputType;
-		let invalidInputFields;
+		let useIDtext;
 
 		if (idregex.test(arg)) inputType = 'ID'; // they used an ID
 		else if (tagregex.test(arg)) inputType = 'tag'; // they used a tag
 		else inputType = 'name';
 
 
-		if (idregex.test(arg)) invalidInputFields = [];	// they already used an id so don't tell them to use an id
-		else invalidInputFields = [{ name: '\u200b', value: `Try using their [ID](${getID})` }]; // didn't use an id
+		if (idregex.test(arg)) ;	// they already used an id so don't tell them to use an id
+		else useIDtext = `\nTry using their [ID](${getID})`; // didn't use an id
 
 		if (!member && !pUser) { // invalid input
 			embed.execute(message,
 				{ // embed object
 					flag: 'error',
-					description: `Unable to find someone with the ${inputType}: ${arg}`,
+					description: `Unable to find someone with the ${inputType}: ${arg}${useIDtext}`,
 
-					fields: invalidInputFields,
+					// fields: invalidInputFields,
 				},
 				{ // command object
 					template: 'requester',
