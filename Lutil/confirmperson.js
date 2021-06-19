@@ -23,7 +23,7 @@ module.exports = {
 		else inputType = 'name';
 
 
-		if (idregex.test(arg)) ;	// they already used an id so don't tell them to use an id
+		if (idregex.test(arg)) useIDtext = ''; // they already used an id so don't tell them to use an id
 		else useIDtext = `\nTry using their [ID](${getID})`; // didn't use an id
 
 		if (!member && !pUser) { // invalid input
@@ -31,8 +31,6 @@ module.exports = {
 				{ // embed object
 					flag: 'error',
 					description: `Unable to find someone with the ${inputType}: ${arg}${useIDtext}`,
-
-					// fields: invalidInputFields,
 				},
 				{ // command object
 					template: 'requester',
