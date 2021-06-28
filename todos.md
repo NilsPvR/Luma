@@ -11,7 +11,7 @@ Use git issues instead of this??
 	-> tell the user to not use discriminators in reasons
 	-> we will ingore the case that they mistyped the name in such a form
 
-
+- leave command
 - use extraInfo tag in help msg
 - make a util for sending a error message when an unexpected error occurs -> so it can be used in lower lvl. files
 - help command for 'input' (see below), 'time' (time inputs: 2h 30min)

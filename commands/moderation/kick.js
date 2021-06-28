@@ -12,15 +12,15 @@ module.exports = {
 		const kickMember = returnObj?.member;
 		const reason = returnObj?.reason;
 		if (!kickMember) return;
-		// if (!kickMember.kickable) {
-		// 	return {
-		// 		flag: 'error',
-		// 		title: 'Unable to kick member',
-		// 		description: `It seems like I am unable to kick ${kickMember.displayName}.\nDo I have the permissions to kick members? Does ${kickMember.displayName} have a higher role then me?`,
-		// 	};
-		// }
+		if (!kickMember.kickable) {
+			return {
+				flag: 'error',
+				title: 'Unable to kick member',
+				description: `It seems like I am unable to kick ${kickMember.displayName}.\nDo I have the permissions to kick members? Does *${kickMember.displayName}* have a higher role then me?`,
+			};
+		}
 		try {
-			// await kickMember.kick();
+			await kickMember.kick();
 			return {
 				flag: 'success',
 				description: `As you wish. ${kickMember.displayName} has been kicked!\nProvided reason ${reason}`,
