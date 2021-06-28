@@ -43,6 +43,7 @@ module.exports = {
 		const user = pUser ?? member.user;
 		const confirmationMessage = await message.channel.send(new MessageEmbed()
 			.setColor(colors.orange)
+			.setThumbnail(user.avatarURL({ size: 64 }))
 			.setTitle('Is this the correct person?')
 			.setDescription(`\n> **${user.tag}**\n\u2001\`${user.id}\``)
 			.setFooter(`You have ${collectorTime}s to respond with 'y' or 'n'`));
