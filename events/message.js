@@ -129,8 +129,24 @@ module.exports = {
 			// <!-- This works for the avatar command but now every command needs to be async -- !>
 			command.execute(message, args, matchedPrefix, commandName).then(ec => { // embedContent
 				if(!ec) return;
-				// if the command is executed in dm with prefix tell the use it is not necessary
-				if(prefixRegex.test(message.content) && message.channel.type == 'dm') ec.dm = true;
+
+
+				// if the command is executed in dm with prefix tell the user it is not necessary
+				if(prefixRegex.test(message.content) && message.channel.type == 'dm') {
+					const { dmNotifs } = client;
+
+					// the user has not used a cmd with prefix in dm's before
+					if (!dmNotifs.has(message.author.id)) {
+						dmNotifs.set(message.author.id, 0);
+					}
+					// first time or 5th time in dm && no prefix
+					if (dmNotifs.get(message.author.id) == 0 || dmNotifs.get(message.author.id) == 5) {
+						dmNotifs.set(message.author.id, 0);
+						ec.dm = true;
+					}
+					// add 1 to the counter
+					dmNotifs.set(message.author.id, dmNotifs.get(message.author.id) + 1);
+				}
 
 				// evalute templates and flags -> then manipulate the embed objet and send it
 				embedfile.execute(message, ec, command);

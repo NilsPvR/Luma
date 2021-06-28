@@ -15,6 +15,7 @@ const client = new Discord.Client({
 });
 client.commands = new Discord.Collection();
 client.cooldowns = new Discord.Collection(); // key = command_name, value = Collection(key = user_id, value = last time used cmd by this user)
+client.dmNotifs = new Discord.Collection(); // key = user.id, value = received messages in dm's with prefix
 
 
 // <<<--- Read all files in the command folder including subdirectories --->>>
