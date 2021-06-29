@@ -68,7 +68,13 @@ module.exports = {
 				if (timeLeft.toFixed(1) == 1.0) {
 					return embedfile.execute(message, {
 						autodel: true,
-						description: `Please wait 1 more second before reusingthe \`${commandName}\``,
+						description: `Please wait 1 more second before reusing the \`${commandName}\``,
+					}, { template: 'requester' });
+				}
+				else if (timeLeft.toFixed(1) == 0.0) {
+					return embedfile.execute(message, {
+						autodel: true,
+						description: `Please wait less then 0.1 more seconds before reusing the \`${commandName}\``,
 					}, { template: 'requester' });
 				}
 				return embedfile.execute(message, {
