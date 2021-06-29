@@ -43,6 +43,9 @@ module.exports = {
 				}
 				break;
 
+			case 'none' :
+				break;
+
 			default:
 				console.log('Whoops an invalid template has been defined');
 			}
@@ -50,11 +53,11 @@ module.exports = {
 
 			let sentMessage;
 			if (command.attachment) { // with attachements
-				if (botsMessage) sentMessage = await botsMessage.edit({ files: [command.attachment], embed: ec }).catch(console.error);
+				if (botsMessage && botsMessage.editable) sentMessage = await botsMessage.edit({ files: [command.attachment], embed: ec }).catch(console.error);
 				else sentMessage = await message.channel.send({ files: [command.attachment], embed: ec }).catch(console.error);
 
 			}
-			else if (botsMessage) { // without attachements
+			else if (botsMessage && botsMessage.editable) { // without attachements
 				sentMessage = await botsMessage.edit({ embed: ec }).catch(console.error);
 
 			}
