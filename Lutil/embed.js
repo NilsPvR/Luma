@@ -25,7 +25,8 @@ const basicFlag = ec => {
 };
 
 module.exports = {
-	execute(message, ec, command) {
+	// a message can be edited if botsMessage is provided
+	async execute(message, ec, command, botsMessage) {
 		if (ec && command.template) {
 			switch (command.template) {
 			case 'simple':
@@ -46,39 +47,36 @@ module.exports = {
 				console.log('Whoops an invalid template has been defined');
 			}
 
-			if (command.attachment) {
-				message.channel.send({ files: [command.attachment], embed: ec })
-					.catch(console.error)
-					.then(msg => {
-						if (ec.autodel) {
-							msg.delete({ timeout: ec.autodel === true ? default_deltetime * 1000 : ec.autodel * 1000 })
-								.catch(console.error);
-						}
-						if (ec.dm) {
-							message.channel.send({ embed: {
-								color: colors.red,
-								description: 'You don\'t have to use a prefix here. I alredy know that you are talking to me. :wave_tone3:',
-							} });
-						}
-					});
+
+			let sentMessage;
+			if (command.attachment) { // with attachements
+				if (botsMessage) sentMessage = await botsMessage.edit({ files: [command.attachment], embed: ec }).catch(console.error);
+				else sentMessage = await message.channel.send({ files: [command.attachment], embed: ec }).catch(console.error);
+
 			}
-			else {
-				message.channel.send({ embed: ec })
-					.catch(console.error)
-					.then(msg => {
-						if (ec.autodel) {
-							msg.delete({ timeout: ec.autodel === true ? default_deltetime * 1000 : ec.autodel * 1000 })
-								.catch(console.error);
-						}
-						if (ec.dm) {
-							message.channel.send({ embed: {
-								color: colors.red,
-								description: 'You don\'t have to use a prefix here. I alredy know that you are talking to me. :wave_tone3:',
-							} });
-						}
-					});
+			else if (botsMessage) { // without attachements
+				sentMessage = await botsMessage.edit({ embed: ec }).catch(console.error);
+
+			}
+			else { // also without attachments
+				sentMessage = await message.channel.send({ embed: ec }).catch(console.error);
 			}
 
+
+			try {
+				if (ec.autodel) {
+					sentMessage.delete({ timeout: ec.autodel === true ? default_deltetime * 1000 : ec.autodel * 1000 });
+				}
+				if (ec.dm) {
+					message.channel.send({ embed: {
+						color: colors.red,
+						description: 'You don\'t have to use a prefix here. I alredy know that you are talking to me. :wave_tone3:',
+					} });
+				}
+			}
+			catch (error) {
+				console.error(error);
+			}
 
 		}
 	},
