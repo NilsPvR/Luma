@@ -17,6 +17,7 @@ module.exports = {
 
 		let inputType;
 		let useIDtext;
+		let foundMsg;
 
 		if (idregex.test(arg)) inputType = 'ID'; // they used an ID
 		else if (tagregex.test(arg)) inputType = 'tag'; // they used a tag
@@ -56,24 +57,23 @@ module.exports = {
 				error: ['time'],
 			});
 
-			const foundMsg = collected.first();
+			foundMsg = collected.first();
 			const fcontent = foundMsg.content.toLowerCase();
-
-			// delete unecessary messages
-			confirmationMessage.delete();
-			if (foundMsg.deletable) foundMsg.delete();
 
 			if (fcontent == 'yes' || fcontent == 'y' || fcontent == '\'yes\'' || fcontent == '\'y\''
 				|| fcontent == '"y"' || fcontent == '"yes') {
+				confirmationMessage.delete();
 				return true;
 			}
 			else if (fcontent == 'no' || fcontent == 'n' || fcontent == '\'no\'' || fcontent == '\'n\''
 				|| fcontent == '"no"' || fcontent == '"n"') {
-				message.channel.send(new MessageEmbed()
-					.setColor(colors.red)
-					.setDescription('Operation cancelled'),
-				);
-				return;
+				embed.execute(message,
+					{
+						color: colors.red,
+						description: 'Operation cancelled',
+					},
+					{ template: 'none' },
+					confirmationMessage);
 			}
 			else { // different response
 				embed.execute(message,
@@ -84,14 +84,12 @@ module.exports = {
 					},
 					{
 						template: 'requester',
-					},
-				);
-				return;
+					}, confirmationMessage);
 			}
+			if (foundMsg.deletable) foundMsg.delete();
+			return;
 		}
 		catch { // timeout
-			confirmationMessage.delete();
-
 			embed.execute(message,
 				{
 					flag: 'error',
@@ -100,8 +98,7 @@ module.exports = {
 				},
 				{
 					template: 'requester',
-				},
-			);
+				}, confirmationMessage);
 			return;
 		}
 

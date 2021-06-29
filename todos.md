@@ -1,7 +1,6 @@
 Use git issues instead of this??
 
 
-- edit conifrmation messages instead of resending
 - change the message and layout of canceling input confirmation, also when placed a wrong input
 - Show subcategories in help all message
 - Missing permissions detection for kick and prune (async / await ??)
@@ -53,3 +52,4 @@ Use git issues instead of this??
 - Don't say: try using their id in confirmation error embed when they already used a id, also remove "or name"
 - Reminders like no need for prefix in dm message should not happen every message -> use a collection to store sent messages
 - fix being able to get a cooldown message of 'wait 0.0seconds'
+- edit conifrmation messages instead of resending
