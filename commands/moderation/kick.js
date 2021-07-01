@@ -1,4 +1,5 @@
 const { getMember } = require('../../Lutil/mention');
+const { checkManageable } = require('../../Lutil/manageable');
 module.exports = {
 	name: 'kick',
 	description: 'Kicks user',
@@ -13,11 +14,10 @@ module.exports = {
 		const reason = returnObj?.reason;
 		if (!kickMember) return;
 		if (!kickMember.kickable) {
-			return {
-				flag: 'error',
-				title: 'Unable to kick member',
-				description: `It seems like I am unable to kick ${kickMember.displayName}.\nDo I have the permissions to kick members? Does *${kickMember.displayName}* have a higher role then me?`,
-			};
+			if (await checkManageable(message, kickMember)) {
+				/* TBD use Lutil for this */ message.channel.send(`Something went wrong. It seems like ${kickMember.displayName} can be kicked but it also can not`);
+			}
+			return;
 		}
 		try {
 			await kickMember.kick();

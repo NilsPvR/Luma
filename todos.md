@@ -1,15 +1,18 @@
 Use git issues instead of this??
 
-
+- Fix "y" not getting deleted -> Lutil.confirmperson.js
 - change the message and layout of canceling input confirmation, also when placed a wrong input
 - Show subcategories in help all message
-- Missing permissions detection for kick and prune (async / await ??)
+- Fix perm detection on same highest role position -> Lutil.manageable
+- Show roles in between the two highest roles -> Lutil.manageable
 - Help message: If usage contains 'user or member' then say that users/members can be called by name, tag, nicknam, id -> users outside of the guild might not be found without the id
 	-> confirmation can be skipped by using 'y' at the end
 - in mention.js if the regex finds a tag with more then 32chars, containing @ or : or ``` then the user put #1111 (a discriminator) in the reason which breaks
 	-> tell the user to not use discriminators in reasons
 	-> we will ingore the case that they mistyped the name in such a form
 
+- add a cmd attribute to disable public use of that cmd
+- bot permissions attribute -> check in msg.js if the bot has the required perms
 - leave command, so the bot can leave a server without having to get kicked
 - use extraInfo tag in help msg
 - make a util for sending a error message when an unexpected error occurs -> so it can be used in lower lvl. files
@@ -53,3 +56,5 @@ Use git issues instead of this??
 - Reminders like no need for prefix in dm message should not happen every message -> use a collection to store sent messages
 - fix being able to get a cooldown message of 'wait 0.0seconds'
 - edit conifrmation messages instead of resending
+- Missing permissions detection for kick and prune (async / await ??)
+- Check if the bots role is lower then the to be kicked member or if the bot just doesn't have permissions. Maybe make a util for that?
