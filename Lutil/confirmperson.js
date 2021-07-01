@@ -62,6 +62,7 @@ module.exports = {
 
 			if (fcontent == 'yes' || fcontent == 'y' || fcontent == '\'yes\'' || fcontent == '\'y\''
 				|| fcontent == '"y"' || fcontent == '"yes') {
+				if (foundMsg.deletable) foundMsg.delete();
 				confirmationMessage.delete();
 				return true;
 			}
