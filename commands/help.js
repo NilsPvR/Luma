@@ -1,8 +1,6 @@
-const { prefix, default_cooldown, default_deltetime } = require('../config.json');
+const { prefix, default_cooldown } = require('../config.json');
 const { readdirSync } = require('fs');
 const Discord = require('discord.js');
-const { execute } = require('../Lutil/embed');
-// !!!!! handlesubcategories() only does the subcates and not the actual category. This causes the help all to fail
 module.exports = {
 	name: 'help',
 	aliases: ['huh', 'commands'],
@@ -63,6 +61,9 @@ module.exports = {
 			}
 		};
 
+		// eslint-disable-next-line indent
+// -----------------------------------------------------------------------
+
 		// --- BASIC HELP COMMAND
 		if(!args.length) {
 			// could also make a js which contains category information -> get a name and stuff from that
@@ -100,25 +101,12 @@ module.exports = {
 				fields = fields.concat(arrOfields);
 			}
 
-			await execute(message,
-				{
-					title: 'Help all cmd',
-					description: data.join('\n'),
-					fields: fields,
-				},
-				{ template: 'simple' });
-
-			if (message.channel.type === 'dm') return;
-			try {
-				const msg = await message.channel.send('Check your DM\'s');
-				msg.delete({ timeout: default_deltetime });
-			}
-			catch(error) {
-				console.error(`Could not send help DM to ${message.author.tag}.\n`, error);
-				message.reply('it seems like I can\'t DM you! Do you have DMs disabled?');
-			}
-
-
+			return {
+				sendDm: { toggle: true },
+				title: 'Help all cmd',
+				description: data.join('\n'),
+				fields: fields,
+			};
 		}
 
 
