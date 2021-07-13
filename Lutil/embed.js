@@ -1,4 +1,4 @@
-const { colors, default_deltetime } = require('../config.json');
+const { colors, default_deletetime } = require('../config.json');
 
 const basicFlag = ec => {
 	switch (ec.flag) {
@@ -24,9 +24,10 @@ const basicFlag = ec => {
 	}
 };
 
-module.exports = {
+
+const obj = {
 	// a message can be edited if botsMessage is provided
-	async execute(message, ec, command, botsMessage) {
+	execute: async function(message, ec, command, botsMessage) {
 		if (ec && command.template) {
 			switch (command.template) {
 			case 'simple':
@@ -54,23 +55,42 @@ module.exports = {
 			let sentMessage;
 			if (command.attachment) { // with attachements
 				if (botsMessage && botsMessage.editable) sentMessage = await botsMessage.edit({ files: [command.attachment], embed: ec }).catch(console.error);
-				else sentMessage = await message.channel.send({ files: [command.attachment], embed: ec }).catch(console.error);
+				if (ec.sendDm?.toggle) { // for sending the embed in dms add { toggle: boolean, success: embed object, failed: embed object}
+					try {
+						await message.author.send({ files: [command.attachment], embed: ec });
+						if (message.channel.type !== 'dm') obj.execute(message, { autodel: true, description: (ec.sendDm.success ?? 'Check your DMs!') }, { template: 'requester' }); // no error catched so far -> send success info
+					}
+					catch(error) { // error found -> unable to send DM
+						console.error(`Unable to dm someone:\n${error}`);
+						obj.execute(message, { description: (ec.sendDm.failed ?? 'It seems like I can\'t DM you! Do you have DMs disabled?') }, { template: 'requester' });
+					}
+
+				}
+				else { sentMessage = await message.channel.send({ files: [command.attachment], embed: ec }).catch(console.error); }
 
 			}
-			else if (botsMessage && botsMessage.editable) { // without attachements
-				sentMessage = await botsMessage.edit({ embed: ec }).catch(console.error);
+			else { // without attachements
+				if (botsMessage && botsMessage.editable) sentMessage = await botsMessage.edit({ embed: ec }).catch(console.error);
+				if (ec.sendDm?.toggle) { // for sending the embed in dms add { toggle: boolean, success: embed object, failed: embed object}
+					try {
+						await message.author.send({ embed: ec });
+						if (message.channel.type !== 'dm') obj.execute(message, { autodel: true, description: (ec.sendDm.success ?? 'Check your DMs!') }, { template: 'requester' }); // no error catched so far -> send success info
+					}
+					catch(error) { // error found -> unable to send DM
+						console.error(`Unable to dm someone:\n${error}`);
+						obj.execute(message, { description: (ec.sendDm.failed ?? 'It seems like I can\'t DM you! Do you have DMs disabled?') }, { template: 'requester' });
+					}
 
-			}
-			else { // also without attachments
-				sentMessage = await message.channel.send({ embed: ec }).catch(console.error);
+				}
+				else { sentMessage = await message.channel.send({ embed: ec }).catch(console.error); }
 			}
 
 
 			try {
 				if (ec.autodel) {
-					sentMessage.delete({ timeout: ec.autodel === true ? default_deltetime * 1000 : ec.autodel * 1000 });
+					sentMessage.delete({ timeout: (ec.autodel === true ? default_deletetime * 1000 : ec.autodel * 1000) });
 				}
-				if (ec.dm) {
+				if (ec.dmNotif) {
 					message.channel.send({ embed: {
 						color: colors.red,
 						description: 'You don\'t have to use a prefix here. I alredy know that you are talking to me. :wave_tone3:',
@@ -84,3 +104,5 @@ module.exports = {
 		}
 	},
 };
+
+module.exports = obj;

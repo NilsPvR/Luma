@@ -148,7 +148,7 @@ module.exports = {
 					// first time or 5th time in dm && no prefix
 					if (dmNotifs.get(message.author.id) == 0 || dmNotifs.get(message.author.id) == 5) {
 						dmNotifs.set(message.author.id, 0);
-						ec.dm = true;
+						ec.dmNotif = true;
 					}
 					// add 1 to the counter
 					dmNotifs.set(message.author.id, dmNotifs.get(message.author.id) + 1);
