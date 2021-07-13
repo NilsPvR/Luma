@@ -1,6 +1,8 @@
 const { prefix, default_cooldown, default_deltetime } = require('../config.json');
 const { readdirSync } = require('fs');
 const Discord = require('discord.js');
+const { execute } = require('../Lutil/embed');
+// !!!!! handlesubcategories() only does the subcates and not the actual category. This causes the help all to fail
 module.exports = {
 	name: 'help',
 	aliases: ['huh', 'commands'],
@@ -9,7 +11,7 @@ module.exports = {
 	template: 'simple',
 	async execute(message, args, matchedPrefix, commandName) {
 		const data = [];
-		const fields = [];
+		let fields = [];
 		const { commands } = message.client; // all commands
 
 		// returns an array of strings with the direct subfolders of a given absolute path
@@ -19,6 +21,47 @@ module.exports = {
 				.map(dirent => dirent.name);
 		const categories = getDirectories(__dirname).filter(categorie => categorie.toLowerCase() !== 'hidden');
 
+		const getCommands = categorie => {
+			const cateCommands = new Discord.Collection(); // categoryCommands
+			// gets all commands for the category
+			const specificCmdFiles = readdirSync(`./commands/${categorie}`)
+				.filter(file => file.endsWith('.js'));
+
+			for (const file of specificCmdFiles) {
+				const command = require(`./${categorie}/${file}`);
+				// set a new item in the Collection
+				// with the key as the command name and the value as the exported module
+				cateCommands.set(command.name, command);
+			}
+			return cateCommands;
+		};
+
+		// the function will add all subcategories with their according commands and their subcategories ... to the specified fieldArray
+		const handleSubCategories = (source, fieldArray, indent) => { // source is 'cateogrie_folder' in initial call
+			const subCategories = getDirectories(`./commands/${source}`);
+
+			// loop all categories
+			for (const subCategorie of subCategories) {
+				const subCateCommands = new Discord.Collection(); // subCategoryCommands
+				const specificCmdFiles = readdirSync(`./commands/${source}/${subCategorie}`)
+					.filter(file => file.endsWith('.js'));
+
+				// loop all commands in the current categorie
+				for (const file of specificCmdFiles) {
+					const command = require(`${__dirname}/${source}/${subCategorie}/${file}`);
+					// set a new item in the Collection
+					// with the key as the command name and the value as the exported module
+					subCateCommands.set(command.name, command);
+				}
+				indent = indent ?? '';
+				fieldArray.push({ name: `\n${indent} ${subCategorie}`,
+					value: `${indent} \`${subCateCommands.map(command => command.name).join('` | `')}\``,
+				});
+
+				// recursive check for subcategories, the recursive call is ended by the for loop if there aren't any subCategories
+				handleSubCategories(`${source}/${subCategorie}`, fieldArray, indent + ':heavy_minus_sign:');
+			}
+		};
 
 		// --- BASIC HELP COMMAND
 		if(!args.length) {
@@ -41,38 +84,41 @@ module.exports = {
 		// -- COMPLETE COMMAND LIST
 		else if (args[0].toLowerCase() == 'all') {
 			data.push('Here\'s a list of all my commands:');
-			data.push('Now all categories with their according (subcategories and) commands should follow.... ');
 
 			for (const categorie of categories) { // each category
-				data.push(`\n__${categorie}:__ `);
+				const cateCommands = getCommands(categorie);
+				const arrOfields = [];
+				handleSubCategories(categorie, arrOfields); // create a new place in the arr and use it
 
-				const cateCommands = new Discord.Collection(); // categoryCommands
-				// get all the files for current category
-				const specificCmdFiles = readdirSync(`./commands/${categorie}`)
-					.filter(file => file.endsWith('.js'));
+				fields.push(
+					{
+						name: `\n__${categorie}:__ `,
+						value: `\`${cateCommands.map(command => command.name).join('` | `')}\`${arrOfields.length ? `\n\nSubcategorie(s) for '${categorie}'` : ''}`,
+					},
+				);
 
-				for (const file of specificCmdFiles) {
-					const command = require(`./${categorie}/${file}`);
-					// set a new item in the Collection
-					// with the key as the command name and the value as the exported module
-					cateCommands.set(command.name, command);
-				}
-
-				data.push(`\`${cateCommands.map(command => command.name).join('` | `')}\``);
+				fields = fields.concat(arrOfields);
 			}
 
-			return message.author.send(data, { split: true })
-				.then(() => {
-					if (message.channel.type === 'dm') return;
-					message.channel.send('Check your DM\'s')
-						.then(msg => {
-							msg.delete({ timeout: default_deltetime });
-						});
-				})
-				.catch(error => {
-					console.error(`Could not send help DM to ${message.author.tag}.\n`, error);
-					message.reply('it seems like I can\'t DM you! Do you have DMs disabled?');
-				});
+			await execute(message,
+				{
+					title: 'Help all cmd',
+					description: data.join('\n'),
+					fields: fields,
+				},
+				{ template: 'simple' });
+
+			if (message.channel.type === 'dm') return;
+			try {
+				const msg = await message.channel.send('Check your DM\'s');
+				msg.delete({ timeout: default_deltetime });
+			}
+			catch(error) {
+				console.error(`Could not send help DM to ${message.author.tag}.\n`, error);
+				message.reply('it seems like I can\'t DM you! Do you have DMs disabled?');
+			}
+
+
 		}
 
 
@@ -82,53 +128,14 @@ module.exports = {
 		const categorie = categories.find(category => args[0].toLowerCase() == category.toLowerCase()); // using function to make ever category lowercase
 
 		if (categorie) {
-
-			// the function will add all subcategories with their according commands and their subcategories ... to the data array
-			const handleSubCategories = (source, indent) => { // source is 'cateogrie_folder' in initial call
-				const subCategories = getDirectories(`./commands/${source}`);
-
-				// loop all categories
-				for (const subCategorie of subCategories) {
-					const subCateCommands = new Discord.Collection(); // subCategoryCommands
-					const specificCmdFiles = readdirSync(`./commands/${source}/${subCategorie}`)
-						.filter(file => file.endsWith('.js'));
-
-					// loop all commands in the current categorie
-					for (const file of specificCmdFiles) {
-						const command = require(`${__dirname}/${source}/${subCategorie}/${file}`);
-						// set a new item in the Collection
-						// with the key as the command name and the value as the exported module
-						subCateCommands.set(command.name, command);
-					}
-					indent = indent ?? '';
-					fields.push({ name: `\n${indent} ${subCategorie}`,
-						value: `${indent} \`${subCateCommands.map(command => command.name).join('` | `')}\``,
-					});
-
-					// recursive check for subcategories, the recursive call is ended by the for loop if there aren't any subCategories
-					handleSubCategories(`${source}/${subCategorie}`, indent + ':heavy_minus_sign:');
-				}
-			};
-
-			const cateCommands = new Discord.Collection(); // categoryCommands
-			// gets all commands for the category
-			const specificCmdFiles = readdirSync(`./commands/${categorie}`)
-				.filter(file => file.endsWith('.js'));
-
-			for (const file of specificCmdFiles) {
-				const command = require(`./${categorie}/${file}`);
-				// set a new item in the Collection
-				// with the key as the command name and the value as the exported module
-				cateCommands.set(command.name, command);
-			}
-
-			handleSubCategories(categorie);
+			const cateCommands = getCommands(categorie);
+			handleSubCategories(categorie, fields);
 
 			// embed content
 			const ec = {
 				title: `Category: ${categorie}`,
 				// if fields exist -> show subcategorie message
-				description: `\`${cateCommands.map(command => command.name).join('` | `')}\`${fields.length ? '\n\n**Subcategories with their commands**' : ''}`,
+				description: `\`${cateCommands.map(command => command.name).join('` | `')}\`${fields.length ? '\n\n**Subcategorie(s) with their commands**' : ''}`,
 			};
 
 			fields.push({ name: '\u200b', value: `Detailed information on a command - \`${prefix}help [command name]\`` });
