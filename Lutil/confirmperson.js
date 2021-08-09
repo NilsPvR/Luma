@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js');
 const { colors } = require('../config.json');
-const { getID } = require('../linksNtext.json').discord;
+const { getId } = require('../linksNtext.json').discord;
 const embed = require('../Lutil/embed');
 const collectorTime = 10;
 
@@ -16,7 +16,7 @@ module.exports = {
 		const filter = m => m.author.id === message.author.id;
 
 		let inputType;
-		let useIDtext;
+		let useIdText;
 		let foundMsg;
 
 		if (idregex.test(arg)) inputType = 'ID'; // they used an ID
@@ -24,14 +24,14 @@ module.exports = {
 		else inputType = 'name';
 
 
-		if (idregex.test(arg)) useIDtext = ''; // they already used an id so don't tell them to use an id
-		else useIDtext = `\nTry using their [ID](${getID})`; // didn't use an id
+		if (idregex.test(arg)) useIdText = ''; // they already used an id so don't tell them to use an id
+		else useIdText = `\nTry using their [ID](${getId})`; // didn't use an id
 
 		if (!member && !pUser) { // invalid input
 			embed.execute(message,
 				{ // embed object
 					flag: 'error',
-					description: `Unable to find someone with the ${inputType}: ${arg}${useIDtext}`,
+					description: `Unable to find someone with the ${inputType}: ${arg}${useIdText}`,
 				},
 				{ // command object
 					template: 'requester',

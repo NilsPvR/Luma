@@ -8,7 +8,7 @@ module.exports = {
 		member = await member.fetch(true);
 		const botMember = await member.guild.me.fetch(true);
 
-		if (member.id === member.guild.ownerID) {
+		if (member.id === member.guild.ownerId) {
 			execute(message,
 				{
 					flag: 'error',
