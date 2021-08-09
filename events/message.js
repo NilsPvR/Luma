@@ -34,7 +34,7 @@ module.exports = {
 		const prefixRegex = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex(prefix)})\\s*`); // bot tagged or prefix
 		if (message.author.bot) return; // don't read bot messages
 
-		if(!prefixRegex.test(message.content) && message.channel.type !== 'dm') return; // no prefix in a non dm
+		if(!prefixRegex.test(message.content) && message.channel.type !== 'DM') return; // no prefix in a non dm
 
 		const [, matchedPrefix] = prefixRegex.test(message.content) ? message.content.match(prefixRegex) : ''; // get used prefix, if none empty string
 		const messageWOprefix = prefixRegex.test(message.content) ? message.content.slice(matchedPrefix.length) : message.content; // remove prefix if one is used
@@ -88,7 +88,7 @@ module.exports = {
 		setTimeout(() => timestamps.delete(message.author.id), cooldownAmount); // autodelete entry after cooldown epiration
 
 		// --- DM filter
-		if (command.guildOnly && message.channel.type === 'dm') {
+		if (command.guildOnly && message.channel.type === 'DM') {
 			return message.channel.send({ embeds: [new MessageEmbed()
 				.setColor(colors.red)
 				.setDescription('This command no work in my DMs :/'),
@@ -137,7 +137,7 @@ module.exports = {
 
 
 				// if the command is executed in dm with prefix tell the user it is not necessary
-				if(prefixRegex.test(message.content) && message.channel.type == 'dm') {
+				if(prefixRegex.test(message.content) && message.channel.type == 'DM') {
 					const { dmNotifs } = client;
 
 					// the user has not used a cmd with prefix in dm's before

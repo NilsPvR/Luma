@@ -11,6 +11,7 @@ const client = new Client({
 	},
 	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES,
 		Intents.FLAGS.DIRECT_MESSAGES],
+	partials: ['CHANNEL'],
 });
 client.commands = new Collection();
 client.cooldowns = new Collection(); // key = command_name, value = Collection(key = user_id, value = last time used cmd by this user)

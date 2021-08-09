@@ -36,7 +36,7 @@ const obj = {
 
 			case 'requester' :
 				basicFlag(ec);
-				if ((ec.flag !== 'whoops') && message.channel.type !== 'dm') { // only in guilds
+				if ((ec.flag !== 'whoops') && message.channel.type !== 'DM') { // only in guilds
 					ec.footer = {
 						text: `Requested by ${message.member.displayName}`,
 					};
@@ -58,7 +58,7 @@ const obj = {
 				if (ec.sendDm?.toggle) { // for sending the embed in dms add { toggle: boolean, success: embed object, failed: embed object}
 					try {
 						await message.author.send({ files: [command.attachment], embed: ec });
-						if (message.channel.type !== 'dm') obj.execute(message, { autodel: true, description: (ec.sendDm.success ?? 'Check your DMs!') }, { template: 'requester' }); // no error catched so far -> send success info
+						if (message.channel.type !== 'DM') obj.execute(message, { autodel: true, description: (ec.sendDm.success ?? 'Check your DMs!') }, { template: 'requester' }); // no error catched so far -> send success info
 					}
 					catch(error) { // error found -> unable to send DM
 						console.error(`Unable to dm someone:\n${error}`);
@@ -74,7 +74,7 @@ const obj = {
 				if (ec.sendDm?.toggle) { // for sending the embed in dms add { toggle: boolean, success: embed object, failed: embed object}
 					try {
 						await message.author.send({ embed: ec });
-						if (message.channel.type !== 'dm') obj.execute(message, { autodel: true, description: (ec.sendDm.success ?? 'Check your DMs!') }, { template: 'requester' }); // no error catched so far -> send success info
+						if (message.channel.type !== 'DM') obj.execute(message, { autodel: true, description: (ec.sendDm.success ?? 'Check your DMs!') }, { template: 'requester' }); // no error catched so far -> send success info
 					}
 					catch(error) { // error found -> unable to send DM
 						console.error(`Unable to dm someone:\n${error}`);

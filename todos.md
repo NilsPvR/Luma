@@ -4,7 +4,6 @@ Use git issues instead of this??
 
 BUGS
 - guild.member() has been removed
-- channel types are now oppercase and alingn with Discord's naming conventions -> Channel#type
 
 FEATURES
 - reactions for confiramtion, confirmperson.js

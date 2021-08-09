@@ -24,7 +24,7 @@ module.exports = {
 	template: 'simple',
 	async execute(message, args) {
 		if (!args[0]) { // no user provided
-			if (message.channel.type === 'dm') { // Just show the image cuz there is no point in telling whoms avatar that is + no guild
+			if (message.channel.type === 'DM') { // Just show the image cuz there is no point in telling whoms avatar that is + no guild
 				return { image: { url: message.author.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }) } };
 			}
 
@@ -56,7 +56,7 @@ module.exports = {
 		const member = both.member;
 
 		try {
-			if (message.channel.type === 'dm') { // in dm no guild available
+			if (message.channel.type === 'DM') { // in dm no guild available
 				return userBasedAv(user, args);
 			}
 

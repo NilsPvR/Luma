@@ -50,7 +50,7 @@ async function fgetUser(message, args) {
 }
 
 async function fgetMember(message, args) {
-	if (message.channel.type === 'dm') return;
+	if (message.channel.type === 'DM') return;
 	// get the id from mention or just plain id, check for 'y' at the end
 	const idMatches = args.join(' ').match(idregex);
 	const tagMatches = args.join(' ').match(tagregex);
