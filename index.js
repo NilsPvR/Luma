@@ -2,20 +2,19 @@ const dotenv = require('dotenv');
 dotenv.config();
 const { prefix } = require('./config.json');
 
-const Discord = require('discord.js');
+const { Client, Collection, Intents } = require('discord.js');
 
-const client = new Discord.Client({
+const client = new Client({
 	disableMentions: 'everyone',
 	presence: {
 		activity: { name: `${prefix}help | ${prefix}info`, type: 'LISTENING' },
 	},
-	ws: {
-		intent: ['GUILD_MEMBERS'],
-	},
+	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES,
+		Intents.FLAGS.DIRECT_MESSAGES],
 });
-client.commands = new Discord.Collection();
-client.cooldowns = new Discord.Collection(); // key = command_name, value = Collection(key = user_id, value = last time used cmd by this user)
-client.dmNotifs = new Discord.Collection(); // key = user.id, value = received messages in dm's with prefix
+client.commands = new Collection();
+client.cooldowns = new Collection(); // key = command_name, value = Collection(key = user_id, value = last time used cmd by this user)
+client.dmNotifs = new Collection(); // key = user.id, value = received messages in dm's with prefix
 
 
 // <<<--- Read all files in the command folder including subdirectories --->>>
