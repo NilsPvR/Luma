@@ -7,7 +7,7 @@ const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 const embedfile = require('../Lutil/embed.js');
 module.exports = {
-	name: 'message',
+	name: 'messageCreate',
 	run(message, client) {
 		/* possible params in commands:
 			attachment: MessageAttachment Object
