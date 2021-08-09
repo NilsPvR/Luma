@@ -1,5 +1,17 @@
 Use git issues instead of this??
 
+<<<----- Necessary changes due to v12 -> v13
+
+BUGS
+- guild.member() has been removed
+- channel types are now oppercase and alingn with Discord's naming conventions -> Channel#type
+
+FEATURES
+- reactions for confiramtion, confirmperson.js
+- slash commands
+ -> inline replies
+------>>>>>
+
 - change the message and layout of canceling input confirmation, also when placed a wrong input
 - Show subcategories in help all message
 - Fix perm detection on same highest role position -> Lutil.manageable

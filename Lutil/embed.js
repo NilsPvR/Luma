@@ -88,7 +88,7 @@ const obj = {
 
 			try {
 				if (ec.autodel) {
-					sentMessage.delete({ timeout: (ec.autodel === true ? default_deletetime * 1000 : ec.autodel * 1000) });
+					setTimeout(() => sentMessage.delete(), (ec.autodel === true ? default_deletetime * 1000 : ec.autodel * 1000));
 				}
 				if (ec.dmNotif) {
 					message.channel.send({ embeds: [{
