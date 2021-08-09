@@ -19,7 +19,7 @@ module.exports = {
 					const meowEmbed = new MessageEmbed()
 						.setColor(colors.green)
 						.setDescription('You found a cat!');
-					message.channel.send(meowEmbed);
+					message.channel.send({ embeds: [meowEmbed] });
 
 					loop_stop = false;
 					running = true;
@@ -29,7 +29,7 @@ module.exports = {
 							clearInterval(interval);
 							return;
 						}
-						message.channel.send('meow')
+						message.channel.send({ content: 'meow' })
 							.catch(console.error);
 					}, 3 * 1000);
 				}

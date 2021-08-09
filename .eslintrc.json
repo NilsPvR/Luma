@@ -28,7 +28,7 @@
 		"no-shadow": ["error", { "allow": ["err", "resolve", "reject"] }],
 		"no-trailing-spaces": ["error"],
 		"no-var": "error",
-		"object-curly-spacing": ["error", "always", { "arraysInObjects": false }],
+		"object-curly-spacing": ["error", "always", { "arraysInObjects": true }],
 		"prefer-const": "error",
 		"quotes": ["error", "single"],
 		"semi": ["error", "always"],

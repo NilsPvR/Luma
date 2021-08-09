@@ -42,12 +42,13 @@ module.exports = {
 		else if (!fullConfirm) { return true; } // only confirm if the user/member exists, then return
 
 		const user = pUser ?? member.user;
-		const confirmationMessage = await message.channel.send(new MessageEmbed()
+		const confirmationMessage = await message.channel.send({ embeds: [new MessageEmbed()
 			.setColor(colors.orange)
 			.setThumbnail(user.avatarURL({ size: 64 }))
 			.setTitle('Is this the correct person?')
 			.setDescription(`\n> **${user.tag}**\n\u2001\`${user.id}\``)
-			.setFooter(`You have ${collectorTime}s to respond with 'y' or 'n'`));
+			.setFooter(`You have ${collectorTime}s to respond with 'y' or 'n'`),
+		] });
 
 		try {
 			// collect one message

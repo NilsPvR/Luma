@@ -66,7 +66,7 @@ const obj = {
 					}
 
 				}
-				else { sentMessage = await message.channel.send({ files: [command.attachment], embed: ec }).catch(console.error); }
+				else { sentMessage = await message.channel.send({ files: [command.attachment], embeds: [ec] }).catch(console.error); }
 
 			}
 			else { // without attachements
@@ -82,7 +82,7 @@ const obj = {
 					}
 
 				}
-				else { sentMessage = await message.channel.send({ embed: ec }).catch(console.error); }
+				else { sentMessage = await message.channel.send({ embeds: [ec] }).catch(console.error); }
 			}
 
 
@@ -91,10 +91,10 @@ const obj = {
 					sentMessage.delete({ timeout: (ec.autodel === true ? default_deletetime * 1000 : ec.autodel * 1000) });
 				}
 				if (ec.dmNotif) {
-					message.channel.send({ embed: {
+					message.channel.send({ embeds: [{
 						color: colors.red,
 						description: 'You don\'t have to use a prefix here. I alredy know that you are talking to me. :wave_tone3:',
-					} });
+					}] });
 				}
 			}
 			catch (error) {

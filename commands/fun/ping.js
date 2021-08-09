@@ -9,12 +9,12 @@ module.exports = {
 		const messageEmbed = new MessageEmbed()
 			.setDescription(`Websocket heartbeat: ${message.client.ws.ping}ms.\nPinging...`);
 
-		message.channel.send(messageEmbed).then(sent => {
+		message.channel.send({ embeds: [messageEmbed] }).then(sent => {
 			sent.edit({
-				embed: {
+				embeds: [{
 					color: colors.orange,
 					description: `Websocket heartbeat: ${message.client.ws.ping}ms.\nRoundtrip latency: ${sent.createdTimestamp - message.createdTimestamp}ms.`,
-				},
+				}],
 			});
 		});
 	},

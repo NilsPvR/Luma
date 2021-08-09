@@ -15,7 +15,7 @@ module.exports = {
 		if (!kickMember) return;
 		if (!kickMember.kickable) {
 			if (await checkManageable(message, kickMember)) {
-				/* TBD use Lutil for this */ message.channel.send(`Something went wrong. It seems like ${kickMember.displayName} can be kicked but it also can not`);
+				/* TBD use Lutil for this */ message.channel.send({ content: `Something went wrong. It seems like ${kickMember.displayName} can be kicked but it also can not` });
 			}
 			return;
 		}
@@ -27,7 +27,7 @@ module.exports = {
 			};
 		}
 		catch (error) {
-			message.channel.send('fail');
+			message.channel.send({ content: 'fail' });
 			console.error(error);
 		}
 
