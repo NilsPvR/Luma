@@ -5,7 +5,7 @@ const { prefix } = require('./config.json');
 const { Client, Collection, Intents } = require('discord.js');
 
 const client = new Client({
-	disableMentions: 'everyone',
+	allowedMentions: { parse: ['users', 'roles'], repliedUser: false },
 	presence: {
 		activity: { name: `${prefix}help | ${prefix}info`, type: 'LISTENING' },
 	},
