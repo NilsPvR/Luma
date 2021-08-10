@@ -57,7 +57,7 @@ const obj = {
 				if (botsMessage && botsMessage.editable) sentMessage = await botsMessage.edit({ files: [command.attachment], embed: ec }).catch(console.error);
 				if (ec.sendDm?.toggle) { // for sending the embed in dms add { toggle: boolean, success: embed object, failed: embed object}
 					try {
-						await message.author.send({ files: [command.attachment], embed: ec });
+						await message.author.send({ files: [command.attachment], embeds: [ec] });
 						if (message.channel.type !== 'DM') obj.execute(message, { autodel: true, description: (ec.sendDm.success ?? 'Check your DMs!') }, { template: 'requester' }); // no error catched so far -> send success info
 					}
 					catch(error) { // error found -> unable to send DM
@@ -73,7 +73,7 @@ const obj = {
 				if (botsMessage && botsMessage.editable) sentMessage = await botsMessage.edit({ embed: ec }).catch(console.error);
 				if (ec.sendDm?.toggle) { // for sending the embed in dms add { toggle: boolean, success: embed object, failed: embed object}
 					try {
-						await message.author.send({ embed: ec });
+						await message.author.send({ embeds: [ec] });
 						if (message.channel.type !== 'DM') obj.execute(message, { autodel: true, description: (ec.sendDm.success ?? 'Check your DMs!') }, { template: 'requester' }); // no error catched so far -> send success info
 					}
 					catch(error) { // error found -> unable to send DM

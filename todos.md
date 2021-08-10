@@ -9,6 +9,7 @@ FEATURES
 - reactions for confiramtion, confirmperson.js
 - slash commands
  -> inline replies
+- multiple embeds in one message, useful for reloadall
 ------>>>>>
 
 - change the message and layout of canceling input confirmation, also when placed a wrong input
