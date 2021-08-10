@@ -28,7 +28,7 @@ module.exports = {
 				return { image: { url: message.author.displayAvatarURL({ format: 'png', dynamic: true, size: 4096 }) } };
 			}
 
-			const member = message.guild.member(message.author);
+			const member = message.guild.members.cache.get(message.author.id);
 			const footerText = member.nickname ? (message.author.tag + ' - ') : ''; // if nickname -> show tag, else none
 			return {
 				title: member.nickname ?? message.author.tag,

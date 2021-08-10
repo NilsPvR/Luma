@@ -2,13 +2,10 @@ Use git issues instead of this??
 
 <<<----- Necessary changes due to v12 -> v13
 
-BUGS
-- guild.member() has been removed
-
 FEATURES
-- reactions for confiramtion, confirmperson.js
+- reactions for confiramtion, confirmperson.js !!! message collector broke
 - slash commands
- -> inline replies
+	-> inline replies
 - multiple embeds in one message, useful for reloadall
 ------>>>>>
 
@@ -22,6 +19,7 @@ FEATURES
 	-> tell the user to not use discriminators in reasons
 	-> we will ingore the case that they mistyped the name in such a form
 
+- allow to use partial names for `mention.js` 'Dynos is so cool' would be found by entering 'Dynos is'
 - add a cmd attribute to disable public use of that cmd
 - bot permissions attribute -> check in msg.js if the bot has the required perms
 - leave command, so the bot can leave a server without having to get kicked
@@ -29,7 +27,6 @@ FEATURES
 - make a util for sending a error message when an unexpected error occurs -> so it can be used in lower lvl. files
 - help command for 'input' (see below), 'time' (time inputs: 2h 30min)
 - help message: show somewhere that <is required> and [is optional]
-- try using message collector instead of await to allow sending random messages before confirming
 - When a category is called show info about the category (transfer collection in help to index)
 - When a cmd is called without required arguments -> show info about the cmd
 - for command use a custom error message if args are necessary but not provided, a variable in the command module which contains the message as a string
