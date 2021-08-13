@@ -3,9 +3,12 @@ Use git issues instead of this??
 <<<----- Necessary changes due to v12 -> v13
 
 FEATURES
+- dynamically get the owner id by using `client.application.owner`
 - reactions for confiramtion, confirmperson.js !!! message collector broke
 - slash commands
 	-> inline replies
+- inline replies for normal messages
+- deprecation warning for normal messages
 - multiple embeds in one message, useful for reloadall
 ------>>>>>
 

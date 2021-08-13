@@ -1,4 +1,5 @@
 const { colors, default_deletetime } = require('../config.json');
+const { Message, Interaction } = require('discord.js');
 
 const basicFlag = ec => {
 	switch (ec.flag) {
@@ -24,65 +25,79 @@ const basicFlag = ec => {
 	}
 };
 
+const templateDetect = (template, ec, messageOrInteraction) => {
+	switch (template) {
+	case 'simple':
+		basicFlag(ec);
+		break;
+
+	case 'requester' :
+		basicFlag(ec);
+		if ((ec.flag !== 'whoops') && messageOrInteraction.channel.type !== 'DM') { // only in guilds
+			ec.footer = {
+				text: `Requested by ${messageOrInteraction.member.displayName}`,
+			};
+			ec.timestamp = new Date();
+		}
+		break;
+
+	case 'none' :
+		break;
+
+	default:
+		console.log('Whoops an invalid template has been defined');
+	}
+};
+
 
 const obj = {
 	// a message can be edited if botsMessage is provided
-	execute: async function(message, ec, command, botsMessage) {
+	// msg_intact stands for message or interaction -> to support both old message commands and slash commands
+	execute: async function(msg_intact, ec, command, botsMessage) {
 		if (ec && command.template) {
-			switch (command.template) {
-			case 'simple':
-				basicFlag(ec);
-				break;
 
-			case 'requester' :
-				basicFlag(ec);
-				if ((ec.flag !== 'whoops') && message.channel.type !== 'DM') { // only in guilds
-					ec.footer = {
-						text: `Requested by ${message.member.displayName}`,
-					};
-					ec.timestamp = new Date();
-				}
-				break;
+			templateDetect(command.template, ec, msg_intact);
 
-			case 'none' :
-				break;
-
-			default:
-				console.log('Whoops an invalid template has been defined');
-			}
-
-
+			const author = msg_intact.author ?? msg_intact.user;
 			let sentMessage;
 			if (command.attachment) { // with attachements
 				if (botsMessage && botsMessage.editable) sentMessage = await botsMessage.edit({ files: [command.attachment], embed: ec }).catch(console.error);
 				if (ec.sendDm?.toggle) { // for sending the embed in dms add { toggle: boolean, success: embed object, failed: embed object}
 					try {
-						await message.author.send({ files: [command.attachment], embeds: [ec] });
-						if (message.channel.type !== 'DM') obj.execute(message, { autodel: true, description: (ec.sendDm.success ?? 'Check your DMs!') }, { template: 'requester' }); // no error catched so far -> send success info
+						await author.send({ files: [command.attachment], embeds: [ec] });
+						if (msg_intact.channel.type !== 'DM') obj.execute(msg_intact, { autodel: true, description: (ec.sendDm.success ?? 'Check your DMs!') }, { template: 'requester' }); // no error catched so far -> send success info
 					}
 					catch(error) { // error found -> unable to send DM
 						console.error(`Unable to dm someone:\n${error}`);
-						obj.execute(message, { description: (ec.sendDm.failed ?? 'It seems like I can\'t DM you! Do you have DMs disabled?') }, { template: 'requester' });
+						obj.execute(msg_intact, { description: (ec.sendDm.failed ?? 'It seems like I can\'t DM you! Do you have DMs disabled?') }, { template: 'requester' });
+
 					}
 
 				}
-				else { sentMessage = await message.channel.send({ files: [command.attachment], embeds: [ec] }).catch(console.error); }
+				else {
+					if (msg_intact instanceof Message) sentMessage = await msg_intact.channel.send({ files: [command.attachment], embeds: [ec] }).catch(console.error);
+					if (msg_intact instanceof Interaction) sentMessage = await msg_intact.reply({ files: [command.attachment], embeds: [ec] }).catch(console.error);
+				}
 
 			}
 			else { // without attachements
 				if (botsMessage && botsMessage.editable) sentMessage = await botsMessage.edit({ embed: ec }).catch(console.error);
 				if (ec.sendDm?.toggle) { // for sending the embed in dms add { toggle: boolean, success: embed object, failed: embed object}
 					try {
-						await message.author.send({ embeds: [ec] });
-						if (message.channel.type !== 'DM') obj.execute(message, { autodel: true, description: (ec.sendDm.success ?? 'Check your DMs!') }, { template: 'requester' }); // no error catched so far -> send success info
+						await author.send({ embeds: [ec] });
+						if (msg_intact.channel.type !== 'DM') obj.execute(msg_intact, { autodel: true, description: (ec.sendDm.success ?? 'Check your DMs!') }, { template: 'requester' }); // no error catched so far -> send success info
 					}
 					catch(error) { // error found -> unable to send DM
 						console.error(`Unable to dm someone:\n${error}`);
-						obj.execute(message, { description: (ec.sendDm.failed ?? 'It seems like I can\'t DM you! Do you have DMs disabled?') }, { template: 'requester' });
+						obj.execute(msg_intact, { description: (ec.sendDm.failed ?? 'It seems like I can\'t DM you! Do you have DMs disabled?') }, { template: 'requester' });
 					}
 
 				}
-				else { sentMessage = await message.channel.send({ embeds: [ec] }).catch(console.error); }
+				else {
+					if (msg_intact instanceof Message) sentMessage = await msg_intact.channel.send({ embeds: [ec] }).catch(console.error);
+					if (msg_intact instanceof Interaction) sentMessage = await msg_intact.reply({ embeds: [ec] }).catch(console.error);
+
+				}
 			}
 
 
@@ -91,7 +106,7 @@ const obj = {
 					setTimeout(() => sentMessage.delete(), (ec.autodel === true ? default_deletetime * 1000 : ec.autodel * 1000));
 				}
 				if (ec.dmNotif) {
-					message.channel.send({ embeds: [{
+					msg_intact.channel.send({ embeds: [{
 						color: colors.red,
 						description: 'You don\'t have to use a prefix here. I alredy know that you are talking to me. :wave_tone3:',
 					}] });
