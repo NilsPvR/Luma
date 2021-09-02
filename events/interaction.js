@@ -23,3 +23,55 @@ module.exports = {
 		}
 	},
 };
+
+
+/* Parsing options:
+
+const data = {
+	name: 'ping',
+	description: 'Replies with Pong!',
+	options: [
+		{
+			name: 'input',
+			description: 'Enter a string',
+			type: 'STRING',
+		},
+		{
+			name: 'int',
+			description: 'Enter an integer',
+			type: 'INTEGER',
+		},
+		{
+			name: 'num',
+			description: 'Enter a number',
+			type: 'NUMBER',
+		},
+		{
+			name: 'choice',
+			description: 'Select a boolean',
+			type: 'BOOLEAN',
+		},
+		{
+			name: 'target',
+			description: 'Select a user',
+			type: 'USER',
+		},
+		{
+			name: 'destination',
+			description: 'Select a channel',
+			type: 'CHANNEL',
+		},
+		{
+			name: 'muted',
+			description: 'Select a role',
+			type: 'ROLE',
+		},
+		{
+			name: 'mentionable',
+			description: 'Mention something',
+			type: 'MENTIONABLE',
+		},
+	],
+};
+
+*/
