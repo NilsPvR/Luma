@@ -17,6 +17,6 @@ module.exports = {
 	},
 
 	async slashExecute() {
-		return this.execute();
+		return await this.execute();
 	},
 };

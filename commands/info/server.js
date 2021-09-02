@@ -25,6 +25,6 @@ module.exports = {
 	},
 
 	async slashExecute(client, interaction) {
-		return this.execute(interaction);
+		return await this.execute(interaction);
 	},
 };

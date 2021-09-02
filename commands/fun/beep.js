@@ -30,4 +30,14 @@ module.exports = {
 			],
 		};
 	},
+
+
+	slashCmdData: {
+		name: 'beep',
+		description: 'Boop',
+	},
+
+	async slashExecute() {
+		return await this.execute();
+	},
 };
