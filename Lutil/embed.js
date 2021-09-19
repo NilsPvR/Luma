@@ -66,7 +66,7 @@ const obj = {
 				const newEc = Object.assign({}, ec); // properly copy the ec object, to prevent editing the og ec object
 				// newEc.autodel = 5;
 				newEc.flag = 'error';
-				newEc.description = '**Unable to edit the previous message**\n\n' + newEc.description;
+				newEc.description = `**Unable to edit the previous message**\n\n + ${newEc.description ?? ''}`;
 				const errorMsg = await obj.execute(msg_intact, newEc, { template: 'requester' });
 				return errorMsg;
 			};
