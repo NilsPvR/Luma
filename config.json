@@ -5,7 +5,8 @@
 	"colors": {
 		"orange": "#d68727",
 		"red": "#c2110e",
-		"green": "#529c08"
+		"green": "#529c08",
+		"embedgrey": "#2F3136"
 	},
 	"botdev": [
 		"421039411124371457"
