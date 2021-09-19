@@ -52,10 +52,10 @@ module.exports = {
 			if (mFail) data.push(`**${mFail}** modules could not be reloaded. The following errors have been cought:\n${errorMsg}`);
 
 			if (!mFail && mSuccess) { // none failed, all successful
-				return { flag: 'success', description: data.join('\n') };
+				return { flag: 'success', reply: false, description: data.join('\n') };
 			}
 			else if (mFail && !mSuccess) { // all failed, none succeeded
-				return { flag: 'error',	description: data.join('\n') };
+				return { flag: 'error', reply: false, description: data.join('\n') };
 			}
 			else {
 				return { description: data.join('\n') };
