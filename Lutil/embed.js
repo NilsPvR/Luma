@@ -49,10 +49,26 @@ const templateDetect = (template, ec, messageOrInteraction) => {
 	}
 };
 
+/*
+A message can be edited if botsMessage is provided, this will edit the provided message
+
+msg_intact stands for message or interaction -> to support both old message commands and slash commands
+
+The command object can have templates which define the overall layout ['simple', 'requester', 'none']
+
+The embed content object can have apart from the normal discord.js properties the following properties
+	flag: ['error', 'success', 'whoops'] 										| This changes the design of the embed
+	autodel: boolean or int 													| Automatically delete the message after specified seconds or default time
+	dm: { toggle: boolean, success: optional string, failed: optional string} 	| used to send the message in DM's of the user
+		success or failed: a message to be sent in the original (guild) channel depending on the outcome of sending the dm
+	reply: boolean (default: true) 												| weather to use an inline reply or not
+
+*/
+
 
 const obj = {
-	// a message can be edited if botsMessage is provided
-	// msg_intact stands for message or interaction -> to support both old message commands and slash commands
+	//
+	//
 	execute: async function(msg_intact, ec, command, botsMessage) {
 		if (ec && command.template) {
 
@@ -77,7 +93,7 @@ const obj = {
 					sentMessage = await botsMessage.edit({ files: [command.attachment], embeds: [ec] })
 						.catch(async error => {	sentMessage = await handleUnknowMessage(error);	});
 				}
-				else if (ec.sendDm?.toggle) { // for sending the embed in dms add { toggle: boolean, success: description string, failed: description string}
+				else if (ec.sendDm?.toggle) { // for sending the embed in dms
 					// when botMessage is provided it is expected that this botMessage was sent in dms
 					try {
 						if (botsMessage) {
@@ -94,7 +110,10 @@ const obj = {
 					}
 
 				}
-				else if (msg_intact instanceof Message) { sentMessage = await msg_intact.reply({ files: [command.attachment], embeds: [ec] }).catch(console.error); } // fpr Message
+				else if (msg_intact instanceof Message) { // for Message
+					if (ec.reply === false) sentMessage = await msg_intact.channel.send({ files: [command.attachment], embeds: [ec] }).catch(console.error); // if inline reply is disabled
+					else sentMessage = await msg_intact.relpy({ files: [command.attachment], embeds: [ec] }).catch(console.error);
+				}
 				else if (msg_intact instanceof Interaction) { sentMessage = await msg_intact.reply({ files: [command.attachment], embeds: [ec] }).catch(console.error); } // for SlashCommands
 				else { console.log('Error in Lutil/embed.js:\n- None of the if statements got executed. This should not happen'); }
 
@@ -106,7 +125,7 @@ const obj = {
 					sentMessage = await botsMessage.edit({ embeds: [ec] })
 						.catch(async error => {	sentMessage = await handleUnknowMessage(error);	});
 				}
-				else if (ec.sendDm?.toggle) { // for sending the embed in dms add { toggle: boolean, success: description string, failed: description string}
+				else if (ec.sendDm?.toggle) { // for sending the embed in dms
 					// when botMessage is provided it is expected that this botMessage was sent in dms
 					try {
 						if (botsMessage) {
@@ -122,7 +141,10 @@ const obj = {
 					}
 
 				}
-				else if (msg_intact instanceof Message) { sentMessage = await msg_intact.reply({ embeds: [ec] }).catch(console.error); } // for Messages
+				else if (msg_intact instanceof Message) { // for Messages
+					if (ec.reply === false) sentMessage = await msg_intact.channel.send({ embeds: [ec] }).catch(console.error); // if inline reply is disabled
+					else sentMessage = await msg_intact.reply({ embeds: [ec] }).catch(console.error);
+				}
 				else if (msg_intact instanceof Interaction) { sentMessage = await msg_intact.reply({ embeds: [ec] }).catch(console.error); } // for SlashCommands
 				else { console.log('Error in Lutil/embed.js:\n- None of the if statements got executed. This should not happen'); }
 
