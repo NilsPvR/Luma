@@ -61,7 +61,7 @@ const obj = {
 			const author = msg_intact.author ?? msg_intact.user;
 			let sentMessage;
 			if (command.attachment) { // with attachements
-				if (botsMessage && botsMessage.editable) sentMessage = await botsMessage.edit({ files: [command.attachment], embed: ec }).catch(console.error);
+				if (botsMessage && botsMessage.editable) sentMessage = await botsMessage.edit({ files: [command.attachment], embeds: [ec] }).catch(console.error);
 				if (ec.sendDm?.toggle) { // for sending the embed in dms add { toggle: boolean, success: embed object, failed: embed object}
 					try {
 						await author.send({ files: [command.attachment], embeds: [ec] });
@@ -81,7 +81,7 @@ const obj = {
 
 			}
 			else { // without attachements
-				if (botsMessage && botsMessage.editable) sentMessage = await botsMessage.edit({ embed: ec }).catch(console.error);
+				if (botsMessage && botsMessage.editable) sentMessage = await botsMessage.edit({ embeds: [ec] }).catch(console.error);
 				if (ec.sendDm?.toggle) { // for sending the embed in dms add { toggle: boolean, success: embed object, failed: embed object}
 					try {
 						await author.send({ embeds: [ec] });
