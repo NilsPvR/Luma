@@ -89,7 +89,7 @@ module.exports = {
 
 		// --- DM filter
 		if (command.guildOnly && message.channel.type === 'DM') {
-			return message.channel.send({ embeds: [new MessageEmbed()
+			return message.reply({ embeds: [new MessageEmbed()
 				.setColor(colors.red)
 				.setDescription('This command no work in my DMs :/'),
 			] });
@@ -97,7 +97,7 @@ module.exports = {
 
 		// --- Botdev filter
 		if (command.botdev && !botdev.includes(message.author.id)) {
-			return message.channel.send({ embeds: [new MessageEmbed()
+			return message.reply({ embeds: [new MessageEmbed()
 				.setColor(colors.red)
 				.setDescription(`\`${commandName}\` is reserved for botdevelopers!`),
 			] });
@@ -108,7 +108,7 @@ module.exports = {
 			const authorPerms = message.channel.permissionsFor(message.author);
 			const permissionsText = command.permissions.toLowerCase().replace('_', ' ');
 			if (!authorPerms || !authorPerms.has(command.permissions)) {
-				return message.channel.send({ embeds: [new MessageEmbed()
+				return message.reply({ embeds: [new MessageEmbed()
 					.setColor(colors.red)
 					.setDescription(`To be able to execute this command you need \`${permissionsText}\` permissions!`),
 				] });
@@ -123,7 +123,7 @@ module.exports = {
 				reply += `\nUse the command like this: \`${prefix}${command.name} ${command.usage}\``;
 			}
 
-			return message.channel.send({ embeds: [new MessageEmbed()
+			return message.reply({ embeds: [new MessageEmbed()
 				.setColor(colors.red)
 				.setDescription(reply),
 			] });
@@ -160,7 +160,7 @@ module.exports = {
 		catch (error) {
 			// error detection
 			console.error(error);
-			message.channel.send({ embeds: [new MessageEmbed()
+			message.reply({ embeds: [new MessageEmbed()
 				.setColor(colors.red)
 				.setDescription('An error occured. Plz report this to the developer.\n\n```diff\n- ' + error.message + '\n```')
 				.setFooter('Metzok#6146'),

@@ -6,7 +6,7 @@ module.exports = {
 	description: 'Vital information about me',
 	cooldown: 10,
 	async execute(message) {
-		const sentMessage = await message.channel.send({ embeds: [{ color: embedgrey, description: `Websocket heartbeat: ${message.client.ws.ping}ms. \nPinging...` }] });
+		const sentMessage = await message.reply({ embeds: [{ color: embedgrey, description: `Websocket heartbeat: ${message.client.ws.ping}ms. \nPinging...` }] });
 		execute(message, { color: orange, description: `Websocket heartbeat: ${message.client.ws.ping}ms.\nRoundtrip latency: ${sentMessage.createdTimestamp - message.createdTimestamp}ms.` }, { template: 'simple' }, sentMessage);
 		return;
 	},

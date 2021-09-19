@@ -94,7 +94,7 @@ const obj = {
 					}
 
 				}
-				else if (msg_intact instanceof Message) { sentMessage = await msg_intact.channel.send({ files: [command.attachment], embeds: [ec] }).catch(console.error); } // fpr Message
+				else if (msg_intact instanceof Message) { sentMessage = await msg_intact.reply({ files: [command.attachment], embeds: [ec] }).catch(console.error); } // fpr Message
 				else if (msg_intact instanceof Interaction) { sentMessage = await msg_intact.reply({ files: [command.attachment], embeds: [ec] }).catch(console.error); } // for SlashCommands
 				else { console.log('Error in Lutil/embed.js:\n- None of the if statements got executed. This should not happen'); }
 
@@ -122,7 +122,7 @@ const obj = {
 					}
 
 				}
-				else if (msg_intact instanceof Message) { sentMessage = await msg_intact.channel.send({ embeds: [ec] }).catch(console.error); } // for Messages
+				else if (msg_intact instanceof Message) { sentMessage = await msg_intact.reply({ embeds: [ec] }).catch(console.error); } // for Messages
 				else if (msg_intact instanceof Interaction) { sentMessage = await msg_intact.reply({ embeds: [ec] }).catch(console.error); } // for SlashCommands
 				else { console.log('Error in Lutil/embed.js:\n- None of the if statements got executed. This should not happen'); }
 
@@ -134,7 +134,7 @@ const obj = {
 					setTimeout(() => sentMessage.delete(), (ec.autodel === true ? default_deletetime * 1000 : ec.autodel * 1000));
 				}
 				if (ec.dmNotif) {
-					msg_intact.channel.send({ embeds: [{
+					msg_intact.reply({ embeds: [{
 						color: colors.red,
 						description: 'You don\'t have to use a prefix here. I alredy know that you are talking to me. :wave_tone3:',
 					}] });

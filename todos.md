@@ -1,13 +1,13 @@
 Use git issues instead of this??
 
 <<<----- Necessary changes due to v12 -> v13
+https://discordjs.guide/additional-info/changes-in-v13.html#clientoptions-1
 
 FEATURES
 - dynamically get the owner id by using `client.application.owner`
 - reactions for confiramtion, confirmperson.js !!! message collector broke
 - slash commands
 	-> inline replies
-- inline replies for normal messages
 - deprecation warning for normal messages
 - multiple embeds in one message, useful for reloadall
 ------>>>>>
@@ -70,3 +70,4 @@ FEATURES
 - Missing permissions detection for kick and prune (async / await ??)
 - Check if the bots role is lower then the to be kicked member or if the bot just doesn't have permissions. Maybe make a util for that?
 - Fix "y" not getting deleted -> Lutil.confirmperson.js
+- inline replies for normal messages
