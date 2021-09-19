@@ -60,14 +60,31 @@ const obj = {
 
 			const author = msg_intact.author ?? msg_intact.user;
 			let sentMessage;
+
+			const handleUnknowMessage = async (error) => { // Method used to send a message, once a botmessage (which was supposed to be edited) got deleted
+				console.error(`Error initiated in Lutil/embed.js while trying to edit a message: ${error.message}`);
+				const newEc = Object.assign({}, ec); // properly copy the ec object, to prevent editing the og ec object
+				// newEc.autodel = 5;
+				newEc.flag = 'error';
+				newEc.description = '**Unable to edit the previous message**\n\n' + newEc.description;
+				const errorMsg = await obj.execute(msg_intact, newEc, { template: 'requester' });
+				return errorMsg;
+			};
+
 			if (command.attachment) { // with attachements
 
-				if (botsMessage && botsMessage.editable) { sentMessage = await botsMessage.edit({ files: [command.attachment], embeds: [ec] }).catch(console.error); }
+				if (botsMessage && botsMessage.editable) {
+					sentMessage = await botsMessage.edit({ files: [command.attachment], embeds: [ec] })
+						.catch(async error => {	sentMessage = await handleUnknowMessage(error);	});
+				}
 				else if (ec.sendDm?.toggle) { // for sending the embed in dms add { toggle: boolean, success: description string, failed: description string}
 					// when botMessage is provided it is expected that this botMessage was sent in dms
 					try {
-						if (botsMessage && botsMessage.editable) sentMessage = botsMessage.edit({ files: [command.attachment], embeds: [ec] }); // edit message
-						else sentMessage = await author.send({ files: [command.attachment], embeds: [ec] }); // send new DM
+						if (botsMessage) {
+							sentMessage = botsMessage.edit({ files: [command.attachment], embeds: [ec] }) // edit message
+								.catch(async error => {	sentMessage = await handleUnknowMessage(error);	});
+						}
+						else { sentMessage = await author.send({ files: [command.attachment], embeds: [ec] }); } // send new DM
 						if (msg_intact.channel.type !== 'DM') obj.execute(msg_intact, { autodel: true, description: (ec.sendDm.success ?? 'Check your DMs!') }, { template: 'requester' }); // no error catched so far -> send success info
 					}
 					catch(error) { // error found -> unable to send DM
@@ -85,12 +102,18 @@ const obj = {
 			else { // without attachements
 
 				// eslint-disable-next-line no-lonely-if
-				if (botsMessage && botsMessage.editable) { sentMessage = await botsMessage.edit({ embeds: [ec] }).catch(console.error);	}
+				if (botsMessage) {
+					sentMessage = await botsMessage.edit({ embeds: [ec] })
+						.catch(async error => {	sentMessage = await handleUnknowMessage(error);	});
+				}
 				else if (ec.sendDm?.toggle) { // for sending the embed in dms add { toggle: boolean, success: description string, failed: description string}
 					// when botMessage is provided it is expected that this botMessage was sent in dms
 					try {
-						if (botsMessage && botsMessage.editable) sentMessage = botsMessage.edit({ embeds: [ec] }); // edit message
-						else sentMessage = await author.send({ embeds: [ec] }); // send new DM
+						if (botsMessage) {
+							sentMessage = botsMessage.edit({ embeds: [ec] }) // edit message
+								.catch(async error => {	sentMessage = await handleUnknowMessage(error);	});
+						}
+						else { sentMessage = await author.send({ embeds: [ec] }); } // send new DM
 						if (msg_intact.channel.type !== 'DM') obj.execute(msg_intact, { autodel: true, description: (ec.sendDm.success ?? 'Check your DMs!') }, { template: 'requester' }); // no error catched so far -> send success info
 					}
 					catch(error) { // error found -> unable to send DM
@@ -121,7 +144,9 @@ const obj = {
 				console.error(error);
 			}
 
+			return sentMessage;
 		}
+
 	},
 };
 
