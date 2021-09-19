@@ -1,21 +1,13 @@
-const { colors } = require('../../config.json');
-const { MessageEmbed } = require('discord.js');
+const { orange, embedgrey } = require('../../config.json').colors;
+const { execute } = require('../../Lutil/embed');
 
 module.exports = {
 	name: 'ping',
 	description: 'Vital information about me',
 	cooldown: 10,
 	async execute(message) {
-		const messageEmbed = new MessageEmbed()
-			.setDescription(`Websocket heartbeat: ${message.client.ws.ping}ms.\nPinging...`);
-
-		message.channel.send({ embeds: [messageEmbed] }).then(sent => {
-			sent.edit({
-				embeds: [{
-					color: colors.orange,
-					description: `Websocket heartbeat: ${message.client.ws.ping}ms.\nRoundtrip latency: ${sent.createdTimestamp - message.createdTimestamp}ms.`,
-				}],
-			});
-		});
+		const sentMessage = await message.channel.send({ embeds: [{ color: embedgrey, description: `Websocket heartbeat: ${message.client.ws.ping}ms. \nPinging...` }] });
+		execute(message, { color: orange, description: `Websocket heartbeat: ${message.client.ws.ping}ms.\nRoundtrip latency: ${sentMessage.createdTimestamp - message.createdTimestamp}ms.` }, { template: 'simple' }, sentMessage);
+		return;
 	},
 };
