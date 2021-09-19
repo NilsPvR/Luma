@@ -61,10 +61,13 @@ const obj = {
 			const author = msg_intact.author ?? msg_intact.user;
 			let sentMessage;
 			if (command.attachment) { // with attachements
-				if (botsMessage && botsMessage.editable) sentMessage = await botsMessage.edit({ files: [command.attachment], embeds: [ec] }).catch(console.error);
-				if (ec.sendDm?.toggle) { // for sending the embed in dms add { toggle: boolean, success: embed object, failed: embed object}
+
+				if (botsMessage && botsMessage.editable) { sentMessage = await botsMessage.edit({ files: [command.attachment], embeds: [ec] }).catch(console.error); }
+				else if (ec.sendDm?.toggle) { // for sending the embed in dms add { toggle: boolean, success: description string, failed: description string}
+					// when botMessage is provided it is expected that this botMessage was sent in dms
 					try {
-						await author.send({ files: [command.attachment], embeds: [ec] });
+						if (botsMessage && botsMessage.editable) sentMessage = botsMessage.edit({ files: [command.attachment], embeds: [ec] }); // edit message
+						else sentMessage = await author.send({ files: [command.attachment], embeds: [ec] }); // send new DM
 						if (msg_intact.channel.type !== 'DM') obj.execute(msg_intact, { autodel: true, description: (ec.sendDm.success ?? 'Check your DMs!') }, { template: 'requester' }); // no error catched so far -> send success info
 					}
 					catch(error) { // error found -> unable to send DM
@@ -74,17 +77,20 @@ const obj = {
 					}
 
 				}
-				else {
-					if (msg_intact instanceof Message) sentMessage = await msg_intact.channel.send({ files: [command.attachment], embeds: [ec] }).catch(console.error);
-					if (msg_intact instanceof Interaction) sentMessage = await msg_intact.reply({ files: [command.attachment], embeds: [ec] }).catch(console.error);
-				}
+				else if (msg_intact instanceof Message) { sentMessage = await msg_intact.channel.send({ files: [command.attachment], embeds: [ec] }).catch(console.error); } // fpr Message
+				else if (msg_intact instanceof Interaction) { sentMessage = await msg_intact.reply({ files: [command.attachment], embeds: [ec] }).catch(console.error); } // for SlashCommands
+				else { console.log('Error in Lutil/embed.js:\n- None of the if statements got executed. This should not happen'); }
 
 			}
 			else { // without attachements
-				if (botsMessage && botsMessage.editable) sentMessage = await botsMessage.edit({ embeds: [ec] }).catch(console.error);
-				if (ec.sendDm?.toggle) { // for sending the embed in dms add { toggle: boolean, success: embed object, failed: embed object}
+
+				// eslint-disable-next-line no-lonely-if
+				if (botsMessage && botsMessage.editable) { sentMessage = await botsMessage.edit({ embeds: [ec] }).catch(console.error);	}
+				else if (ec.sendDm?.toggle) { // for sending the embed in dms add { toggle: boolean, success: description string, failed: description string}
+					// when botMessage is provided it is expected that this botMessage was sent in dms
 					try {
-						await author.send({ embeds: [ec] });
+						if (botsMessage && botsMessage.editable) sentMessage = botsMessage.edit({ embeds: [ec] }); // edit message
+						else sentMessage = await author.send({ embeds: [ec] }); // send new DM
 						if (msg_intact.channel.type !== 'DM') obj.execute(msg_intact, { autodel: true, description: (ec.sendDm.success ?? 'Check your DMs!') }, { template: 'requester' }); // no error catched so far -> send success info
 					}
 					catch(error) { // error found -> unable to send DM
@@ -93,11 +99,10 @@ const obj = {
 					}
 
 				}
-				else {
-					if (msg_intact instanceof Message) sentMessage = await msg_intact.channel.send({ embeds: [ec] }).catch(console.error);
-					if (msg_intact instanceof Interaction) sentMessage = await msg_intact.reply({ embeds: [ec] }).catch(console.error);
+				else if (msg_intact instanceof Message) { sentMessage = await msg_intact.channel.send({ embeds: [ec] }).catch(console.error); } // for Messages
+				else if (msg_intact instanceof Interaction) { sentMessage = await msg_intact.reply({ embeds: [ec] }).catch(console.error); } // for SlashCommands
+				else { console.log('Error in Lutil/embed.js:\n- None of the if statements got executed. This should not happen'); }
 
-				}
 			}
 
 
