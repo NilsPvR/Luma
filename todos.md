@@ -7,6 +7,9 @@ FEATURES
 - dynamically get the owner id by using `client.application.owner`
 - reactions for confiramtion, confirmperson.js !!! message collector broke
 - slash commands
+	-> allow to use slashCommand to deploy slash commands.... lol
+		-> deffer slash command for deploy to make sure it works even when it takes a while to load
+	-> allow to deploy slashCommands globally
 	-> inline replies
 - deprecation warning for normal messages
 - multiple embeds in one message, useful for reloadall
