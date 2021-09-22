@@ -5,7 +5,7 @@ This repository is a the source code for a [Discord](https://discord.com) bot. T
 ## What does it do?
 
 Currently there are no plans to publically host this bot. This being my first actual coding project it is mainly to try out new Discord features and improve on my programming skills. This bot doesn't focus on any special commands or a specify category of features. I have mostly focused processing user input and responses.
-Feel free to check out the available commands by opening the according files in the [commands](https://github.com/NilsPvR/tree/main/commands) folder.
+Feel free to check out the available commands by opening the according files in the [commands](https://github.com/NilsPvR/Luma/tree/main/commands) folder.
 
 ## Contribution
 
