@@ -13,7 +13,10 @@ module.exports = {
 			// execute the command and wait for an response
 			const ec = await command.slashExecute(interaction.client, interaction);
 
-			if (!ec) return; // TBD maybe check if the interaction still has been replied to and if not replied yet reply with error
+			if (!ec) {
+				console.log('no response message returned');
+				return;
+			} // TBD maybe check if the interaction still has been replied to and if not replied yet reply with error
 
 			embedfile.execute(interaction, ec, command);
 		}
