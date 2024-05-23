@@ -1,3 +1,6 @@
+## Project Archival
+This project is no longer maintained and relies on outdated Discord API-Versions. As of May 24, 2024 this project has been archived. 
+
 ## What is this?
 
 This repository is a the source code for a [Discord](https://discord.com) bot. The `discord.js` library is used to contact the Discord bot API. This allows for an easy integration into node.js.
